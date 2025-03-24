@@ -7,7 +7,7 @@ class Othellier:
         self.player = 0
         self.running_state = True
         self.othellier_matrix = np.zeros((8,8), dtype=object)
-        self.__fillCenter()
+        self.__newGame()
        
     ### Public methods ###
     def verif(self):
@@ -18,12 +18,20 @@ class Othellier:
 
     def placeChecker(self, pos):
         if self.othellier_matrix[pos[0], pos[1]] == 0:
-            self.othellier_matrix[pos[0], pos[1]] = Pion(self.player, pos)
+            self.othellier_matrix[pos[0], pos[1]] = Pion(self.player, pos + (1,1))
+            self.changePlayer()
         else:
             print("Already a checker here.")
 
     def winner(self):
-        pass
+        all_checkers = self.__countChecker()
+
+        if all_checkers[0] == all_checkers[1]:
+            print("Egalité")
+        if all_checkers[0] < all_checkers[1]:
+            print("Blanc gagne")
+        if all_checkers[0] > all_checkers[1]:
+            print("Noir gagne")
 
     ### Protected methods ###
     def _takeChecker(self, pion):
@@ -55,11 +63,26 @@ class Othellier:
         # print("Center filled succesfully")
 
     def __countChecker(self):
-        pass
+        nb_checker_white = 0
+        nb_checker_black = 0
+        
+        for liste in self.othellier_matrix:
+            for elm in liste:
+                if elm != 0:
+                    if elm.getColor() == 0:
+                        nb_checker_white += 1
+                    if elm.getColor() == 1:
+                        nb_checker_black += 1
+
+        return (nb_checker_black, nb_checker_white)
 
     def __newGame(self):
         self.othellier_matrix = np.zeros((8, 8), object)
         self.__fillCenter()
+
+    ### Getter ###
+    def getMatrix(self):
+        return self.othellier_matrix
 
     ### Debug methods ###
     def showGrid(self):
@@ -71,10 +94,10 @@ class Pion():
         self.position = pos
     
     def __repr__(self):
-        if self.color == 1:
-            return f'B'
         if self.color == 0:
             return f'N'
+        if self.color == 1:
+            return f'B'
     
     def getColor(self):
         return self.color
@@ -90,6 +113,14 @@ class TestOthellier(unittest.TestCase):
         othellier = Othellier()
         self.assertEqual(othellier.othellier_matrix.shape, (8, 8))  
 
+    def testStartPosition(self):
+        othellier = Othellier()
+
+        test_othellier = np.zeros((8,8), object)
+
+        test_othellier[3,4], test_othellier[4,3] = Pion(0, (4,5)), Pion(0, (5,4))
+        test_othellier[3,3], test_othellier[4,4] = Pion(1, (4,4)), Pion(1, (5,5))
+
     def testChangePlayer(self):
         othellier = Othellier()
         self.assertEqual(othellier.player, 0)
@@ -99,12 +130,29 @@ class TestOthellier(unittest.TestCase):
 
         othellier.changePlayer()
         self.assertEqual(othellier.player, 0)
-    
+
+    def testPlaceChecker(self):
+        othellier = Othellier()
+
+        test_othellier = np.zeros((8,8), object)
+        test_othellier[3,4], test_othellier[4,3] = Pion(0, (4,5)), Pion(0, (5,4))
+        test_othellier[3,3], test_othellier[4,4] = Pion(1, (4,4)), Pion(1, (5,5))
+
+        othellier.placeChecker((0,0))
+        test_othellier[0,0] = Pion(0, (1,1))
+        self.assertEqual(test_othellier.all(), othellier.getMatrix().all())
+
+        othellier.placeChecker((7,7))
+        test_othellier[7,7] = Pion(0, (8,8))
+        othellier.showGrid()
+
+        othellier.placeChecker((0,0))
+        othellier.showGrid()
+
 
 
 if __name__ == '__main__':
     othellier = Othellier()
-    
     othellier.showGrid()
 
     unittest.main()
