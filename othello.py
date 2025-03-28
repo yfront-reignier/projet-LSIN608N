@@ -249,9 +249,10 @@ def dessine_pion(plateau,couple,yellow_circles,canvas_pions):
             px, py = pion
             circle = plateau.create_oval(py * 100 + 35, px * 100 + 35, py * 100 + 65, px * 100 + 65, outline='yellow', width=3)
             yellow_circles.append(circle)
+
     
-    
-def interface():
+def interface(root):
+    root.destroy()
     global cases,player
     root=tk.Tk()
     root.title('Othello')
@@ -301,6 +302,38 @@ def interface():
     root.grid_columnconfigure(1, weight=1)
     root.grid_columnconfigure(2, weight=1)
     root.mainloop()
+ 
+def start_jvj():
+    interface(root)    
 
-interface()  
+def page_debut():
+    global root
+    root=tk.Tk()
+    root.title('Debut Othello')
+    root.geometry("500x500")
+
+    label = tk.Label(root, text="Othello",justify=tk.CENTER)
+    label.grid(row=0,column=0, columnspan=4)
+    label.config(font=("Arial", 20))
+    
+
+    jvj_button = tk.Button(root,text="Joueur vs Joueur", command=start_jvj, padx=20, pady=10, font=("Arial", 10))
+    jvj_button.grid(row=1,column=0,columnspan=2)
+
+    jvc_button = tk.Button(root,text="Joueur vs IA",padx=20, pady=10, font=("Arial", 10))
+    jvc_button.grid(row=1,column=1,columnspan=4)
+
+    quitter_button = tk.Button(root,text="Quitter",command=root.quit, padx=20, pady=10, font=("Arial", 10))
+    quitter_button.grid(row=2,column=0,columnspan=4)
+
+    root.grid_rowconfigure(0, weight=1)
+    root.grid_rowconfigure(1, weight=1)
+    root.grid_rowconfigure(2, weight=1)
+
+    root.grid_columnconfigure(0, weight=1)
+    root.grid_columnconfigure(1, weight=1)
+    root.grid_columnconfigure(2, weight=1)
+    root.mainloop()
+
+page_debut()
 
