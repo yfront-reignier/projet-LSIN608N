@@ -1,4 +1,6 @@
 import tkinter as tk 
+from tkinter import *
+from PIL import Image, ImageTk
 
 player=0
 cases={}
@@ -316,6 +318,14 @@ def page_debut():
     label.grid(row=0,column=0, columnspan=4)
     label.config(font=("Arial", 20))
     
+    image_fond = Image.open("othello.png")
+    image_fond = image_fond.resize((500, 500), Image.ANTIALIAS)
+    image_fond_tk = ImageTk.PhotoImage(image_fond)
+    canvas = tk.Canvas(root, width=500, height=500)
+    canvas.grid(row=0, column=0, rowspan=4, columnspan=3)
+    canvas.create_image(0, 0, image=image_fond_tk, anchor="nw")
+    canvas.image = image_fond_tk
+
 
     jvj_button = tk.Button(root,text="Joueur vs Joueur", command=start_jvj, padx=20, pady=10, font=("Arial", 10))
     jvj_button.grid(row=1,column=0,columnspan=2)
