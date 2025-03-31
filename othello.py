@@ -1,6 +1,4 @@
-import tkinter as tk 
 import numpy as np
-import unittest
 
 class Othellier:
     def __init__(self):
@@ -37,8 +35,9 @@ class Othellier:
             return 0
 
     ### Protected methods ###
-    def _takeChecker(self, pion):
-        pion.changeColor()
+    def _takeCheckers(self, l_pion):
+        for pion in l_pion:
+            pion.changeColor()
 
     def _isEmpty(self):
         for ligne in self.othellier_matrix:
@@ -63,7 +62,6 @@ class Othellier:
         self.othellier_matrix[3,4] = Pion(1,(4,5))
         self.othellier_matrix[4,3] = Pion(1,(5,4))
         self.othellier_matrix[4,4] = Pion(0,(5,5))
-        # print("Center filled succesfully")
 
     def __countChecker(self):
         nb_checker_white = 0
