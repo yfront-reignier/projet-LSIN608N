@@ -98,7 +98,7 @@ def jeu(matrice,player):
                     if cases[(k*100,l*100)]=='false':
                         if (k,l) not in list(possibilite.values()):
                             possibilite[elem].append((k,l))
-                            print('A','pos:',(k,l))
+                            # print('A','pos:',(k,l))
                         break
                     if cases[(k*100,l*100)]==actual:
                             break
@@ -114,7 +114,7 @@ def jeu(matrice,player):
                     if cases[(k*100,l*100)]=='false':
                         if (k,l) not in list(possibilite.values()):
                             possibilite[elem].append((k,l))
-                            print('B','pos:',(k,l))
+                            # print('B','pos:',(k,l))
                         break
                     if cases[(k*100,l*100)]==actual:
                             break
@@ -130,7 +130,7 @@ def jeu(matrice,player):
                     if cases[(k*100,l*100)]=='false':
                         if (k,l) not in list( possibilite.values()):
                             possibilite[elem].append((k,l))
-                            print('C','pos:',(k,l))
+                            # print('C','pos:',(k,l))
                         break
                     
                     k+=1
@@ -143,7 +143,7 @@ def jeu(matrice,player):
                     if matrice[k][l]==0:
                         if (k,l) not in list(possibilite.values()):
                             possibilite[elem].append((k,l))
-                            print('D','pos:',(k,l))
+                            # print('D','pos:',(k,l))
                         break
                     if matrice[k][l]==player+1:
                         break
@@ -228,7 +228,7 @@ def dessine_pion(plateau,couple,yellow_circles,canvas_pions):
         if (y//100,x//100) in val and cases[(y,x)]=='false':
             temp.append(key)
     for elem in temp:
-        print(player)
+        # print(player)
         plateau.create_oval(x+35,y+35,x+65,y+65,fill=couleur)
         if player==0:
             pions[y//100][x//100]=1
@@ -236,7 +236,7 @@ def dessine_pion(plateau,couple,yellow_circles,canvas_pions):
         else:
             pions[y//100][x//100]=2
             cases[(y,x)]='white'
-        print(temp)
+        # print(temp)
         changement_couleur(plateau,cases,player,(y,x),elem)
     player=(player+ 1)%2
         
@@ -264,6 +264,7 @@ def interface(root):
     
     plateau=tk.Canvas(root,width=800,height=800,background='green')
     plateau.bind("<Button-1>", lambda event: dessine_pion(plateau, (event.x, event.y), yellow_circles,canvas_pions))
+    print("hello world")
     possib=jeu(pions,player)
     for liste in possib.values():
         for pion in liste:
@@ -294,8 +295,25 @@ def interface(root):
             canvas_pions[key]=plateau.create_oval(key[1]+35,key[0]+35,key[1]+65,key[0]+65,fill='white')
         elif value=='black':
             canvas_pions[key]=plateau.create_oval(key[1]+35,key[0]+35,key[1]+65,key[0]+65,fill='black')
-            
-    plateau.grid(row=1,column=1)
+
+    label = tk.Label(root, text="Nb pions noir:2",font=("Arial", 20))
+    label.grid(row=1,column=0)
+
+    label2 = tk.Label(root, text="Nb pions blanc:2",font=("Arial", 20))
+    label2.grid(row=2,column=0)
+
+    label3 = tk.Label(root, text="Tour de:",font=("Arial", 20))
+    label3.grid(row=1,column=5)
+    
+    def maj_label():
+        nb_noir = sum(row.count(1) for row in pions)
+        nb_blanc = sum(row.count(2) for row in pions)
+        label.config(text=f"Nb pions noir: {nb_noir}")
+        label2.config(text=f"Nb pions blanc: {nb_blanc}")
+        label3.config(text=f"Tour de: {noms_j[player]}")
+
+    
+    plateau.grid(row=1,column=1,rowspan=2,columnspan=5)
     root.grid_rowconfigure(0, weight=1)
     root.grid_rowconfigure(1, weight=1)
     root.grid_rowconfigure(2, weight=1)
@@ -303,10 +321,12 @@ def interface(root):
     root.grid_columnconfigure(0, weight=1)
     root.grid_columnconfigure(1, weight=1)
     root.grid_columnconfigure(2, weight=1)
+    
+    maj_label()
     root.mainloop()
  
 def start_jvj():
-    interface(root)    
+    interface(root)
 
 def page_debut():
     global root
