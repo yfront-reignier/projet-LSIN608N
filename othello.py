@@ -208,9 +208,7 @@ def changement_couleur(plateau,cases,player,coord1,coord2):
                 plateau.create_oval(j*100+35,i*100+35,j*100+65,i*100+65,fill=noms_j[player])
                 j-=1
                 i+=1
-                        
-        
-            
+                                    
     
 def get_coord(event,canvas):
     dessine_pion(canvas,(event.x,event.y))
