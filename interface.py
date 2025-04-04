@@ -38,7 +38,7 @@ class MainMenu(tk.Frame):
         self.jcia_button = tk.Button(parent,text="Joueur vs IA",padx=20, pady=10, font=("Arial", 10))
         self.jcia_button.grid(row=1,column=1,columnspan=4)
         
-        self.button_quit = tk.Button(parent, text = "Quitter", command = self.quit())
+        self.button_quit = tk.Button(parent, text = "Quitter", command = parent.quit)
         self.button_quit.grid(row=2, column=0, columnspan=4)
 
         parent.grid_rowconfigure(0, weight=1)
@@ -48,6 +48,7 @@ class MainMenu(tk.Frame):
         parent.grid_columnconfigure(0, weight=1)
         parent.grid_columnconfigure(1, weight=1)
         parent.grid_columnconfigure(2, weight=1)
+
     def start_game(self):
         self.game = Game(self)
 
