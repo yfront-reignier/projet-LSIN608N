@@ -261,9 +261,12 @@ def interface(root):
     yellow_circles=[]
     canvas_pions={}
     
-    
+    def click_maj(plateau, couple, yellow_circles,canvas_pions):
+        dessine_pion(plateau, couple, yellow_circles,canvas_pions)
+        maj_label()
+
     plateau=tk.Canvas(root,width=800,height=800,background='green')
-    plateau.bind("<Button-1>", lambda event: dessine_pion(plateau, (event.x, event.y), yellow_circles,canvas_pions))
+    plateau.bind("<Button-1>", lambda event:click_maj(plateau, (event.x,event.y), yellow_circles,canvas_pions) )
     print("hello world")
     possib=jeu(pions,player)
     for liste in possib.values():
@@ -288,6 +291,8 @@ def interface(root):
     plateau.create_line(0,600,800,600,width=3,fill='black')
     plateau.create_line(0,700,800,700,width=3,fill='black')
 
+    
+
 
     for key,value in cases.items():
         if value=='white':
@@ -311,6 +316,9 @@ def interface(root):
         label.config(text=f"Nb pions noir: {nb_noir}")
         label2.config(text=f"Nb pions blanc: {nb_blanc}")
         label3.config(text=f"Tour de: {noms_j[player]}")
+
+    
+
 
     
     plateau.grid(row=1,column=1,rowspan=2,columnspan=5)
