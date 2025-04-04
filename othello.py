@@ -339,7 +339,7 @@ def page_debut():
     label.config(font=("Arial", 20))
     
     image_fond = Image.open("othello.png")
-    image_fond = image_fond.resize((500, 500), Image.ANTIALIAS)
+    image_fond = image_fond.resize((500, 500))
     image_fond_tk = ImageTk.PhotoImage(image_fond)
     canvas = tk.Canvas(root, width=500, height=500)
     canvas.grid(row=0, column=0, rowspan=4, columnspan=3)
