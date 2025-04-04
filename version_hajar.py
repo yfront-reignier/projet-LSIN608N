@@ -1,4 +1,6 @@
 import tkinter as tk 
+from tkinter import *
+from PIL import Image, ImageTk
 import numpy as np
 import copy
 
@@ -374,7 +376,21 @@ class Othellier:
         self.dessine(meilleur_coup,plateau)
         
         return meilleur_coup
-
+    
+    def verif_zero(self):
+        for i in self.matrice:
+            for j in self.matrice:
+                if self.matrice[i][j]==0:
+                    return False
+        return True
+    
+    def verif_poss(self):
+        if not self.jeu():
+            self.change_player()
+            if not self.jeu():
+                return True
+        return False
+        
 
 class Pion():
     def __init__(self,couleur,coord):
@@ -388,55 +404,89 @@ class Pion():
         return self.coordonnee
 
 
-
 class Interface():
-    def __init__(self,othellier, joueurs):
+    def __init__(self):
         self.root = tk.Tk()
-        self.root.title("Othello")
-        self.othellier=othellier
-        self.yellow_circles=[]
-        self.canvas_pions={}
+        # self.othellier=othellier
+        # self.yellow_circles=[]
+        # self.canvas_pions={}
         
-        self.plateau = tk.Canvas(self.root, width=800, height=800, background='green')
-        self.plateau.grid(row=1, column=1)
-        self.plateau.bind("<Button-3>",self.click_to_draw)
-        # self.plateau.bind("<Button-1>", lambda event: othellier.dessine_pion(self.plateau, (event.x, event.y), self.yellow_circles))
-        # self.plateau.bind("<Button-1>", lambda event: othellier.dessine_pion(event, self.plateau, (event.x, event.y), self.yellow_circles))
+#         self.plateau = tk.Canvas(self.root, width=800, height=800, background='green')
+#         self.plateau.grid(row=1, column=1)
+#         self.plateau.bind("<Button-3>",self.click_to_draw)
+#         # self.plateau.bind("<Button-1>", lambda event: othellier.dessine_pion(self.plateau, (event.x, event.y), self.yellow_circles))
+#         # self.plateau.bind("<Button-1>", lambda event: othellier.dessine_pion(event, self.plateau, (event.x, event.y), self.yellow_circles))
 
 
         
-        self.matrice = othellier.matrice
-        self.joueurs = joueurs
-        self.dessiner_plateau()
+#         self.matrice = othellier.matrice
+#         self.joueurs = joueurs
+#         self.dessiner_plateau()
         
+#         self.root.grid_rowconfigure(0, weight=1)
+#         self.root.grid_rowconfigure(1, weight=1)
+#         self.root.grid_rowconfigure(2, weight=1)
+#         self.root.grid_columnconfigure(0, weight=1)
+#         self.root.grid_columnconfigure(1, weight=1)
+#         self.root.grid_columnconfigure(2, weight=1)
+        
+#         self.root.mainloop()
+    
+#     def click_to_draw(self,event):
+#         othellier.click(self.plateau,(event.x,event.y),self.yellow_circles)
+
+#     def dessiner_plateau(self):
+#         for i in range(1, 8):
+#             self.plateau.create_line(i * 100, 0, i * 100, 800, width=3, fill='black')
+#             self.plateau.create_line(0, i * 100, 800, i * 100, width=3, fill='black')
+        
+#         for ligne in self.matrice:
+#             for elem in ligne:
+#                 if elem != 0:
+#                     y, x = elem.get_coordonnee()
+#                     self.plateau.create_oval(x * 100 + 35, y * 100 + 35, x * 100 + 65, y * 100 + 65, fill=self.joueurs[elem.get_couleur()])
+                    
+#         possib=othellier.jeu()
+#         for liste in possib.values():
+#             for pion in liste:
+#                 px, py = pion
+#                 circle = self.plateau.create_oval(py * 100 + 35, px * 100 + 35, py * 100 + 65, px * 100 + 65, outline='yellow', width=3)
+#                 self.yellow_circles.append(circle)
+    def page_debut(self):
+        self.root.title('Debut Othello')
+        self.root.geometry("500x500")
+
+        label = tk.Label(self.root, text="Othello",justify=tk.CENTER)
+        label.grid(row=0,column=0, columnspan=4)
+        label.config(font=("Arial", 20))
+        
+        image_fond = Image.open("othello.png")
+        image_fond = image_fond.resize((500, 500))
+        image_fond_tk = ImageTk.PhotoImage(image_fond)
+        canvas = tk.Canvas(self.root, width=500, height=500)
+        canvas.grid(row=0, column=0, rowspan=4, columnspan=3)
+        canvas.create_image(0, 0, image=image_fond_tk, anchor="nw")
+        canvas.image = image_fond_tk
+
+
+        jvj_button = tk.Button(self.root,text="Joueur vs Joueur", command=start_jvj, padx=20, pady=10, font=("Arial", 10))
+        jvj_button.grid(row=1,column=0,columnspan=2)
+
+        jvc_button = tk.Button(self.root,text="Joueur vs IA",padx=20, pady=10, font=("Arial", 10))
+        jvc_button.grid(row=1,column=1,columnspan=4)
+
+        quitter_button = tk.Button(self.root,text="Quitter",command=self.root.quit, padx=20, pady=10, font=("Arial", 10))
+        quitter_button.grid(row=2,column=0,columnspan=4)
+
         self.root.grid_rowconfigure(0, weight=1)
         self.root.grid_rowconfigure(1, weight=1)
         self.root.grid_rowconfigure(2, weight=1)
+
         self.root.grid_columnconfigure(0, weight=1)
         self.root.grid_columnconfigure(1, weight=1)
         self.root.grid_columnconfigure(2, weight=1)
-        
         self.root.mainloop()
-    
-    def click_to_draw(self,event):
-        othellier.click(self.plateau,(event.x,event.y),self.yellow_circles)
-    def dessiner_plateau(self):
-        for i in range(1, 8):
-            self.plateau.create_line(i * 100, 0, i * 100, 800, width=3, fill='black')
-            self.plateau.create_line(0, i * 100, 800, i * 100, width=3, fill='black')
-        
-        for ligne in self.matrice:
-            for elem in ligne:
-                if elem != 0:
-                    y, x = elem.get_coordonnee()
-                    self.plateau.create_oval(x * 100 + 35, y * 100 + 35, x * 100 + 65, y * 100 + 65, fill=self.joueurs[elem.get_couleur()])
-                    
-        possib=othellier.jeu()
-        for liste in possib.values():
-            for pion in liste:
-                px, py = pion
-                circle = self.plateau.create_oval(py * 100 + 35, px * 100 + 35, py * 100 + 65, px * 100 + 65, outline='yellow', width=3)
-                self.yellow_circles.append(circle)
+
 
 
 othellier=Othellier()
