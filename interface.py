@@ -8,7 +8,7 @@ class Interface(tk.Tk):
         super().__init__()
 
         self.wm_title("Othello")
-        self.geometry("500x500")
+        self.geometry("1000x1000")
         self.config = self.configure(bg = "#e6dbbe")
 
         self.mainmenu = MainMenu(self)
@@ -49,6 +49,11 @@ class MainMenu(tk.Frame):
         parent.grid_columnconfigure(2, weight=1)
 
     def start_game(self):
+        self.cnv.destroy()
+        self.label.destroy()
+        self.jcj_button.destroy()
+        self.jcia_button.destroy()
+        self.button_quit.destroy()
         self.game = Game(self.parent)
         
 
@@ -59,10 +64,21 @@ class Game(tk.Frame):
         self.canvas_pions={}
 
         self.plateau=tk.Canvas(parent,width=800,height=800,background='green')
+
+        self.label = tk.Label(parent, text="Nb pions noir:2",font=("Arial", 20))
+        self.label.grid(row=1,column=0)
+
+        self.label2 = tk.Label(parent, text="Nb pions blanc:2",font=("Arial", 20))
+        self.label2.grid(row=2,column=0)
+
+        self.label3 = tk.Label(parent, text="Tour de:",font=("Arial", 20))
+        self.label3.grid(row=1,column=5)
+
         self.createGrid(8)
         
+
     def createGrid(self, dim_matrix):
-        self.plateau.grid(row=0,column=0,rowspan=4,columnspan=4)
+        self.plateau.grid(row=1,column=1,rowspan=2,columnspan=5)
         self.plateau.create_rectangle(0,0,800,800,fill="green")
 
         for i in range(dim_matrix):
@@ -72,6 +88,7 @@ class Game(tk.Frame):
                 x1 = (i+1)*100
                 y1 = (j+1)*100
                 self.plateau.create_rectangle(x0,y0,x1,y1,fill="green",outline="black")
+    
 
 
 
