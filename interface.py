@@ -5,7 +5,9 @@ import numpy as np
 
 class othellier:
     def __init__(self):
-        pass
+        self.matrice = np.zeros((8,8),dtype=object)
+        self.joueurs = {0:"black", 1:"white"}
+
     def __countChecker(self):
         nb_checker_white = 0
         nb_checker_black = 0
@@ -90,8 +92,18 @@ class Game(tk.Frame):
         super().__init__(parent)
         self.yellow_circles=[]
         self.canvas_pions={}
+        # self.othellier=othellier
+        # self.matrice = othellier.matrice
+        # self.jouers = othellier.joueurs
 
         self.plateau=tk.Canvas(parent,width=800,height=800,background='green')
+        #self.plateau.bind("<Button-1>",self.click_to_draw)
+        parent.grid_rowconfigure(0, weight=1)
+        parent.grid_rowconfigure(1, weight=1)
+        parent.grid_rowconfigure(2, weight=1)
+        parent.grid_columnconfigure(0, weight=1)
+        parent.grid_columnconfigure(1, weight=1)
+        parent.grid_columnconfigure(2, weight=1)
 
         self.label = tk.Label(parent, text="Nb pions noir:2",font=("Arial", 20))
         self.label.grid(row=1,column=0)
@@ -118,13 +130,32 @@ class Game(tk.Frame):
                 x1 = (i+1)*100
                 y1 = (j+1)*100
                 self.plateau.create_rectangle(x0,y0,x1,y1,fill="green",outline="black")
+
+    # def draw_pion(self):
+    #     for ligne in self.matrice:
+    #         for elem in ligne:
+    #             if elem != 0:
+    #                 y, x = elem.getPosition()
+    #                 self.plateau.create_oval(x * 100 + 35, y * 100 + 35, x * 100 + 65, y * 100 + 65, fill=self.joueurs[elem.getColor()])
+
+    #     possib=othellier.jeu()
+    #     for liste in possib.values():
+    #         for pion in liste:
+    #             px, py = pion
+    #             circle = self.plateau.create_oval(py * 100 + 35, px * 100 + 35, py * 100 + 65, px * 100 + 65, outline='yellow', width=3)
+    #             self.yellow_circles.append(circle)
     
-    def maj_label(self, othellier):
-        nb_noir = othellier.__countChecker()[0]
-        nb_blanc = othellier.__countChecker()[1]
-        self.label.config(text=f"Nb pions noir: {nb_noir}")
-        self.label2.config(text=f"Nb pions blanc: {nb_blanc}")
-        self.label3.config(text=f"Tour de: noir")
+    # def click_to_draw(self, event):
+    #     othellier.click(self.plateau,(event.x,event.y),self.yellow_circles)
+
+
+
+    # def maj_label(self, othellier):
+    #     nb_noir = othellier.__countChecker()[0]
+    #     nb_blanc = othellier.__countChecker()[1]
+    #     self.label.config(text=f"Nb pions noir: {nb_noir}")
+    #     self.label2.config(text=f"Nb pions blanc: {nb_blanc}")
+    #     self.label3.config(text=f"Tour de: noir")
 
 
 
