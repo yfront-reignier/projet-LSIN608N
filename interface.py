@@ -3,6 +3,34 @@ from tkinter import *
 from PIL import Image, ImageTk
 import numpy as np
 
+class othellier:
+    def __init__(self):
+        pass
+    def __countChecker(self):
+        nb_checker_white = 0
+        nb_checker_black = 0
+        return (nb_checker_black, nb_checker_white)
+
+class Pion():
+    def __init__(self, color, pos):
+        self.color = color
+        self.position = pos
+    
+    def __repr__(self):
+        if self.color == 0:
+            return f'N'
+        if self.color == 1:
+            return f'B'
+    
+    def getColor(self):
+        return self.color
+    
+    def changeColor(self):
+        self.color = 2 % (self.color + 1)
+
+    def getPosition(self):
+        return self.position
+
 class Interface(tk.Tk):
     def __init__(self): 
         super().__init__()
@@ -71,13 +99,15 @@ class Game(tk.Frame):
         self.label2 = tk.Label(parent, text="Nb pions blanc:2",font=("Arial", 20))
         self.label2.grid(row=2,column=0)
 
-        self.label3 = tk.Label(parent, text="Tour de:",font=("Arial", 20))
+        self.label3 = tk.Label(parent, text="Tour de: noir",font=("Arial", 20))
         self.label3.grid(row=1,column=5)
 
-        self.createGrid(8)
+        matrix = np.zeros((8,8))
+        self.createGrid(matrix)
         
 
-    def createGrid(self, dim_matrix):
+    def createGrid(self, matrix):
+        dim_matrix = matrix.shape[0]
         self.plateau.grid(row=1,column=1,rowspan=2,columnspan=5)
         self.plateau.create_rectangle(0,0,800,800,fill="green")
 
@@ -89,6 +119,12 @@ class Game(tk.Frame):
                 y1 = (j+1)*100
                 self.plateau.create_rectangle(x0,y0,x1,y1,fill="green",outline="black")
     
+    def maj_label(self, othellier):
+        nb_noir = othellier.__countChecker()[0]
+        nb_blanc = othellier.__countChecker()[1]
+        self.label.config(text=f"Nb pions noir: {nb_noir}")
+        self.label2.config(text=f"Nb pions blanc: {nb_blanc}")
+        self.label3.config(text=f"Tour de: noir")
 
 
 
