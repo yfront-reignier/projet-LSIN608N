@@ -41,6 +41,13 @@ class MainMenu(tk.Frame):
         self.button_quit = tk.Button(parent, text = "Quitter", command = self.quit())
         self.button_quit.grid(row=2, column=0, columnspan=4)
 
+        parent.grid_rowconfigure(0, weight=1)
+        parent.grid_rowconfigure(1, weight=1)
+        parent.grid_rowconfigure(2, weight=1)
+
+        parent.grid_columnconfigure(0, weight=1)
+        parent.grid_columnconfigure(1, weight=1)
+        parent.grid_columnconfigure(2, weight=1)
     def start_game(self):
         self.game = Game(self)
 
