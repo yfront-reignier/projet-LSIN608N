@@ -11,197 +11,225 @@ class Othellier:
         self.compteur=0
         self.joueurs={1:'white',0:'black'}
         self.player=0
-        self.matrice=np.zeros((8,8),dtype=object)
-        self.matrice[3,3]=Pion(0,(3,3))
-        self.matrice[3,4]=Pion(1,(3,4))
-        self.matrice[3,2]=Pion(0,(3,2))
-        self.matrice[5,4]=Pion(0,(5,4))
-        self.matrice[4,3]=Pion(1,(4,3))
-        self.matrice[4,4]=Pion(0,(4,4))
-        # self.player=player
+        self.matrix=np.zeros((8,8),dtype=object)
+        self.matrix[3,3]=Pion(0,(3,3))
+        self.matrix[3,4]=Pion(1,(3,4))
+        self.matrix[3,2]=Pion(0,(3,2))
+        self.matrix[5,4]=Pion(0,(5,4))
+        self.matrix[4,3]=Pion(1,(4,3))
+        self.matrix[4,4]=Pion(0,(4,4))
         
+    def line_wise(self,w,y,z,matrix,elem,possibilite):
+        k=z
+        #si pion opposé est a gauche du pion du joueur
+        if y>z:
+            while k>=0:
+                if matrix[w,k]==0:
+                    if (w,k) not in list(possibilite.values()):
+                        possibilite[elem].append((w,k))
+                    break
+                elif matrix[w,k].get_couleur()==self.player:
+                    break
+                k-=1
+        #si pion opposé est a droite du pion du joueur   
+        if y<z:
+            while k<8:
+                if matrix[w,k]==0:
+                    if (w,k) not in list(possibilite.values()):
+                        possibilite[elem].append((w,k))
+                    break
+                elif matrix[w,k].get_couleur()==self.player:
+                    break
+                k+=1 
     
-    def jeu(self,matrice=None):
-        if matrice is None:
-            matrice=self.matrice
-        pions_atraiter=[]
-        possibilite={}
+    def column_wise(self,x,w,z,matrix,elem,possibilite):
+        #pion oppose en dessous du pion du joueur
+        if x>w:
+            k=w
+            while k>=0:
+                if matrix[k,z]==0:
+                    if (k,z) not in list(possibilite.values()):
+                        possibilite[elem].append((k,z))
+                    break
+                elif matrix[k,z].get_couleur()==self.player:
+                    break
+                k-=1
+        #pion oppose au dessus du pion du joueur  
+        if x<w:
+            k=w
+            while k<8:
+                if matrix[k,z]==0:
+                    if (k,z) not in list(possibilite.values()):
+                        possibilite[elem].append((k,z) )
+                    break
+                elif matrix[k,z].get_couleur()==self.player:
+                    break
+                k+=1
+    
+    def diagonal_wise_1(self,w,z,matrix,elem,possibilite):
+        k=w
+        l=z
+        while k>=0 and k<8 and l>=0 and l<8:
+            if matrix[k,l]==0:
+                if (k,l) not in list(possibilite.values()):
+                    possibilite[elem].append((k,l))
+
+                break
+            elif matrix[k,l].get_couleur()==self.player:
+                    break
+            
+            k-=1
+            l-=1
+    def diagonal_wise_2(self,w,z,matrix,elem,possibilite):
+        k=w
+        l=z
+        while k>=0 and k<8 and l>=0 and l<8:
+            if matrix[k,l]==0:
+                if (k,l) not in list(possibilite.values()):
+                    possibilite[elem].append((k,l))
+                break
+            elif matrix[k,l].get_couleur()==self.player:
+                    break
+            k+=1
+            l+=1
+    def diagonal_wise_3(self,w,z,matrix,elem,possibilite):
+        k=w
+        l=z
+        while k>=0 and k<8 and l>=0 and l<8:
+            if matrix[k,l]==0:
+                if (k,l) not in list( possibilite.values()):
+                    possibilite[elem].append((k,l))
+                break
+            elif matrix[k,l].get_couleur()==self.player:
+                    break
+            k+=1
+            l-=1
+    def diagonal_wise_4(self,w,z,matrix,elem,possibilite):
+        k=w
+        l=z
+        while k>=0 and k<8 and l>=0 and l<8:
+            if matrix[k,l]==0:
+                if (k,l) not in list(possibilite.values()):
+                    possibilite[elem].append((k,l))
+
+                break
+            elif matrix[k,l].get_couleur()==self.player:
+                break
+        
+            k-=1
+            l+=1   
+    
+    def players_pawns(self,matrix):
+        pawns=[]
         for i in range(8):
             for j in range(8):
-                if matrice[i][j]!=0:
-                    if matrice[i][j].get_couleur()==self.player:
-                        pions_atraiter.append((i,j))
-        for elem in pions_atraiter:
-            possibilite[elem]=[]
-            x,y=elem
-            encercler=[]
-            for i in range(x-1,x+2):
+                if matrix[i][j]!=0:
+                    if matrix[i][j].get_couleur()==self.player:
+                        pawns.append((i,j))
+        return pawns
+    
+    def find_opponants_pawns(self,x,y,matrix):
+        pawns=[]
+        for i in range(x-1,x+2):
                 for j in range(y-1,y+2):
-                    if (i>=0  and i<=7) and ( j>=0 and  j<=7) and matrice[i,j]!=0:
-                        if matrice[i][j].get_couleur()==(self.player+1)%2:
-                            encercler.append((i,j))
-            for pb in encercler:
+                    if (i>=0  and i<=7) and ( j>=0 and  j<=7) and matrix[i,j]!=0:
+                        if matrix[i][j].get_couleur()==(self.player+1)%2:
+                            pawns.append((i,j))
+                            
+        return pawns
+    
+    def jeu(self,matrix=None):
+        if matrix is None:
+            matrix=self.matrix
+        pawns_list=self.players_pawns(matrix)
+        possibilities={}
+        
+        for elem in pawns_list:
+            possibilities[elem]=[]
+            x,y=elem
+            opponants_pawns=self.find_opponants_pawns(x,y,matrix)
+            for pb in opponants_pawns:
                 w,z=pb
-                # sur la meme ligne
                 if x==w:
-                    k=z
-                    #si pion opposé est a gauche du pion du joueur
-                    if y>z:
-                        while k>=0:
-                            if matrice[w,k]==0:
-                                if (w,k) not in list(possibilite.values()):
-                                    possibilite[elem].append((w,k))
-                                break
-                            elif matrice[w,k].get_couleur()==self.player:
-                                break
-                            k-=1
-                    #si pion opposé est a droite du pion du joueur   
-                    if y<z:
-                        while k<8:
-                            if matrice[w,k]==0:
-                                if (w,k) not in list(possibilite.values()):
-                                    possibilite[elem].append((w,k))
-                                break
-                            elif matrice[w,k].get_couleur()==self.player:
-                                break
-                            k+=1 
-                
-                # sur la meme colonne
+                    self.line_wise(w,y,z,matrix,elem,possibilities)
                 if y==z:
-                    #pion oppose en dessous du pion du joueur
-                    if x>w:
-                        k=w
-                        while k>=0:
-                            if matrice[k,z]==0:
-                                if (k,z) not in list(possibilite.values()):
-                                    possibilite[elem].append((k,z))
-                                break
-                            elif matrice[k,z].get_couleur()==self.player:
-                                break
-                            k-=1
-                    #pion oppose au dessus du pion du joueur  
-                    if x<w:
-                        k=w
-                        while k<8:
-                            if matrice[k,z]==0:
-                                if (k,z) not in list(possibilite.values()):
-                                    possibilite[elem].append((k,z) )
-                                break
-                            elif matrice[k,z].get_couleur()==self.player:
-                                break
-                            k+=1 
-                # sur la diagonale
-                #diagonale en haut a gauche  
+                    self.column_wise(x,w,z,matrix,elem,possibilities) 
                 if x==w+1 and y==z+1:
-                    k=w
-                    l=z
-                    while k>=0 and k<8 and l>=0 and l<8:
-                        if matrice[k,l]==0:
-                            if (k,l) not in list(possibilite.values()):
-                                possibilite[elem].append((k,l))
-
-                            break
-                        elif matrice[k,l].get_couleur()==self.player:
-                                break
-                        
-                        k-=1
-                        l-=1
-                    
-                #digonale en bas a droite
+                    self.diagonal_wise_1(w,z,matrix,elem,possibilities)       
                 if x==w-1 and y==z-1:
-                    k=w
-                    l=z
-                    while k>=0 and k<8 and l>=0 and l<8:
-                        if matrice[k,l]==0:
-                            if (k,l) not in list(possibilite.values()):
-                                possibilite[elem].append((k,l))
-                            break
-                        elif matrice[k,l].get_couleur()==self.player:
-                                break
-                        k+=1
-                        l+=1
-                    
-                #en bas a gauche
+                    self.diagonal_wise_2(w,z,matrix,elem,possibilities)
                 if x==w-1 and y==z+1:
-                    k=w
-                    l=z
-                    while k>=0 and k<8 and l>=0 and l<8:
-                        if matrice[k,l]==0:
-                            if (k,l) not in list( possibilite.values()):
-                                possibilite[elem].append((k,l))
-                            break
-                        elif matrice[k,l].get_couleur()==self.player:
-                                break
-                        k+=1
-                        l-=1
-                #en haut a droite
+                    self.diagonal_wise_3(w,z,matrix,elem,possibilities)
                 if x==w+1 and y==z-1:
-                    k=w
-                    l=z
-                    while k>=0 and k<8 and l>=0 and l<8:
-                        if matrice[k,l]==0:
-                            if (k,l) not in list(possibilite.values()):
-                                possibilite[elem].append((k,l))
-
-                            break
-                        elif matrice[k,l].get_couleur()==self.player:
-                            break
-                    
-                        k-=1
-                        l+=1
-        return possibilite
+                    self.diagonal_wise_4(w,z,matrix,elem,possibilities)
+        return possibilities
     
     
-    def calcul_points(self,coord1,coord2):
-        x,y=coord1
-        w,z=coord2 
-        compteur=-2
-        #meme ligne ou meme colonne
+    def calculates_points_by_line_or_column(self,x,y,w,z,counter):
         if (x==w and y!=z) or (x!=w and y==z):
             for i in range(min(x, w), max(x, w)+1):
                 for j in range(min(z, y), max(z, y)+1):
-                    compteur+=1
+                    counter+=1
+        return counter
+    def calculates_points_by_diagonal_1(self,x,y,w,z,counter):
+        i=x
+        j=y
+        while i>=w and j>=z:
+            counter+=1
+            j-=1
+            i-=1
+        return counter
+        
+    def calculates_points_by_diagonal_2(self,x,y,w,z,counter):
+        i=x
+        j=y
+        while i<=w and j<=z:
+            counter+=1
+            j+=1
+            i+=1
+        return counter
+    def calculates_points_by_diagonal_3(self,x,y,w,z,counter):
+        i=x
+        j=y
+        while i>=w and j<=z:
+            counter+=1
+            j+=1
+            i-=1
+        return counter
+    def calculates_points_by_diagonal_4(self,x,y,w,z,counter):
+        i=x
+        j=y
+        while i>0 and i<=w and j>=z:
+            counter+=1
+            j-=1
+            i+=1
+        return counter
+        
+    
+    def points_calculation(self,coord1,coord2):
+        x,y=coord1
+        w,z=coord2 
+        counter=-2
+        #meme ligne ou meme colonne
+        if x==w or y==z:
+            counter+=self.calculates_points_by_line_or_column(x,y,w,z,counter)
         #diagonale
         if x!=w and y!=z:
             if w<x and z<y:
-                #en haut a gauche
-                i=x
-                j=y
-                while i>=w and j>=z:
-                    compteur+=1
-                    j-=1
-                    i-=1
-            # en bas a droite
+                counter+=self.calculates_points_by_diagonal_1(x,y,w,z,counter)
             if w>x and z>y:
-                i=x
-                j=y
-                while i<=w and j<=z:
-                    compteur+=1
-                    j+=1
-                    i+=1
-            # en haut a droite
+                counter+=self.calculates_points_by_diagonal_2(x,y,w,z,counter)
             if w<x and z>y:
-                i=x
-                j=y
-                while i>=w and j<=z:
-                    compteur+=1
-                    j+=1
-                    i-=1
-            #en bas a gauche
+                counter+=self.calculates_points_by_diagonal_3(x,y,w,z,counter)
             if w>x and z<y:
-                i=x
-                j=y
-                while i>0 and i<=w and j>=z:
-                    compteur+=1
-                    j-=1
-                    i+=1
-        return ((w,z),compteur)
+                counter+=self.calculates_points_by_diagonal_4(x,y,w,z,counter)
+        return ((w,z),counter)
     
-    def cout(self,dico):
+    def cost(self,dico):
         dict={}
         for key,value in dico.items():
             for elem in value:
-                cle,val=self.calcul_points(key,elem)
+                cle,val=self.points_calculation(key,elem)
                 dict[cle]=val
         return dict  
     
@@ -216,10 +244,7 @@ class Othellier:
             for i in range(min(x, w), max(x, w)+1):
                 # print('i: ',i)
                 for j in range(min(z, y), max(z, y)+1):
-                    # print('j: ',j)
-                    # print((i,j),'avant: ',self.matrice[i][j].get_couleur())
-                    self.matrice[i][j]=Pion(self.player,(i,j))
-                    # print((i,j),'apres: ',self.matrice[i][j].get_couleur())
+                    self.matrix[i][j]=Pion(self.player,(i,j))
                     self.dessine((i,j),plateau)
         #diagonale
         if x!=w and y!=z:
@@ -228,7 +253,7 @@ class Othellier:
                 i=w
                 j=z
                 while i>0 and i<x and j<y:
-                    self.matrice[i][j]=Pion(self.player,(i,j))
+                    self.matrix[i][j]=Pion(self.player,(i,j))
                     self.dessine((i,j),plateau)
                     j+=1
                     i+=1
@@ -238,7 +263,7 @@ class Othellier:
                 j=z
                 
                 while i>x and j>y:
-                    self.matrice[i][j]=Pion(self.player,(i,j))
+                    self.matrix[i][j]=Pion(self.player,(i,j))
                     self.dessine((i,j),plateau)
                     j-=1
                     i-=1
@@ -247,7 +272,7 @@ class Othellier:
                 i=x
                 j=y
                 while i>0 and i<w and j>z:
-                    self.matrice[i][j]=Pion(self.player,(i,j))
+                    self.matrix[i][j]=Pion(self.player,(i,j))
                     self.dessine((i,j),plateau)
                     j-=1
                     i+=1
@@ -256,7 +281,7 @@ class Othellier:
                 i=w
                 j=z
                 while i>0 and i<x and j>y:
-                    self.matrice[i][j]=Pion(self.player,(i,j))
+                    self.matrix[i][j]=Pion(self.player,(i,j))
                     self.dessine((i,j),plateau)
                     j-=1
                     i+=1
@@ -265,16 +290,16 @@ class Othellier:
         y,x=coord
         plateau.create_oval(x*100+35,y*100+35,x*100+65,y*100+65,fill=joueurs[self.player])
 
-    def ecriture_matrice(self,msg,ind,compteur=None, matrice=None):
-        if matrice is None :
-            matrice=self.matrice
+    def ecriture_matrix(self,msg,ind,compteur=None, matrix=None):
+        if matrix is None :
+            matrix=self.matrix
         if compteur is None:
             compteur=self.compteur
-        nom='matrice'+str(ind)+".txt"
+        nom='matrix'+str(ind)+".txt"
         with open(nom, "w") as f:
             f.write(msg+'\n')
             f.write(str(compteur)+'\n')
-            for row in matrice:
+            for row in matrix:
                 for val in row:
                     if val==0:
                         f.write(str(val))
@@ -283,53 +308,48 @@ class Othellier:
                 f.write('\n')
     
     def click(self,plateau,couple,yellow_circles):
-        print('PLAYER IS',self.player)
         if self.player==0:
             self.dessine_pion(plateau,couple,yellow_circles)
         else:
             self.choisir_coup(plateau)
             self.change_player()
-            self.dessin_possibilite(yellow_circles,plateau)
+            self.drawn_playable_pawns(yellow_circles,plateau)
             
             
-    def dessin_possibilite(self,yellow_circles,plateau):
+    def drawn_playable_pawns(self,yellow_circles,plateau):
         for circle in yellow_circles:
             plateau.delete(circle)
-            
-        # definir les cercles de possibilites
         yellow_circles.clear()
-        futur_poss=self.jeu()
-        for liste in futur_poss.values():
-            for pion in liste:
-                px, py = pion
+        futur_pawns=self.jeu()
+        for list in futur_pawns.values():
+            for pawn in list:
+                px, py = pawn
                 circle = plateau.create_oval(py * 100 + 35, px * 100 + 35, py * 100 + 65, px * 100 + 65, outline='yellow', width=3)
                 yellow_circles.append(circle)
                 
-    def dessine_pion(self,plateau,couple,yellow_circles):
-        x_non_arrondis,y_non_arrondis=couple
-        x=(x_non_arrondis-x_non_arrondis%100)//100
-        y=(y_non_arrondis-y_non_arrondis%100)//100
-        poss=self.jeu()
+    def draw_pawn(self,board,couple,yellow_circles):
+        x=(couple[0]-couple[0]%100)//100
+        y=(couple[1]-couple[1]%100)//100
+        possibilities=self.jeu()
         temp=[]
         possible=False
-        for key,val in poss.items():   
-            if (y,x) in val and self.matrice[y,x]==0:
+        for key,val in possibilities.items():   
+            if (y,x) in val and self.matrix[y,x]==0:
                 temp.append(key)
                 possible=True
         for elem in temp:
-            self.dessine((y,x),plateau)
-            self.matrice[y,x]=Pion(self.player,(y,x))
-            self.changement_couleur((y,x),elem,plateau)
+            self.dessine((y,x),board)
+            self.matrix[y,x]=Pion(self.player,(y,x))
+            self.changement_couleur((y,x),elem,board)
         if possible:
             self.compteur+=1
-            self.ecriture_matrice('je suis le vrai jeu',str(0))
             self.change_player()
-            self.dessin_possibilite(yellow_circles,plateau)
+            self.drawn_playable_pawns(yellow_circles,board)
         
 
     def simulation_recursive(self, mat, joueur, profondeur):
         coups_possibles = self.jeu(mat)
-        cout_coups=self.cout(coups_possibles)
+        cout_coups=self.cost(coups_possibles)
 
         meilleures_cout = {mvt:cout for mvt, cout in cout_coups.items() if cout==max(cout_coups.values())}
         
@@ -352,11 +372,11 @@ class Othellier:
     def simulate_n_moves(self, meilleur_mvt, profondeur):
         results = {}
         for mvt in meilleur_mvt:
-            temp = copy.deepcopy(self.matrice)
+            temp = copy.deepcopy(self.matrix)
             temp[mvt] = Pion(self.player, mvt)
             score_final = self.simulation_recursive(temp, self.player, profondeur)
             results[mvt] = score_final
-        print(results)
+        print('res',results)
         meilleur_coups = max(results, key=lambda k: results[k][1])
 
         return meilleur_coups
@@ -364,13 +384,13 @@ class Othellier:
     def choisir_coup(self, plateau,profondeur=3):
         print('flag')
         possibilites = self.jeu()
-        scores = self.cout(possibilites)
+        scores = self.cost(possibilites)
 
         max_gain = max(scores.values())
         meilleur_coups = [move for move, value in scores.items() if value==max_gain]
 
         meilleur_coup = self.simulate_n_moves(meilleur_coups, profondeur)
-        self.matrice[meilleur_coup]=Pion(1,meilleur_coup)
+        self.matrix[meilleur_coup]=Pion(1,meilleur_coup)
         self.dessine(meilleur_coup,plateau)
         
         return meilleur_coup
@@ -405,7 +425,7 @@ class Interface():
 
 
         
-        self.matrice = othellier.matrice
+        self.matrix = othellier.matrix
         self.joueurs = joueurs
         self.dessiner_plateau()
         
@@ -425,7 +445,7 @@ class Interface():
             self.plateau.create_line(i * 100, 0, i * 100, 800, width=3, fill='black')
             self.plateau.create_line(0, i * 100, 800, i * 100, width=3, fill='black')
         
-        for ligne in self.matrice:
+        for ligne in self.matrix:
             for elem in ligne:
                 if elem != 0:
                     y, x = elem.get_coordonnee()
