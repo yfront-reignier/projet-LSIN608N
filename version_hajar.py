@@ -470,6 +470,11 @@ class Interface():
                 circle = self.board.create_oval(py * 100 + 35, px * 100 + 35, py * 100 + 65, px * 100 + 65, outline='yellow', width=3)
                 self.yellow_circles.append(circle)
 
+    def maj_score(self):
+        self.label.config(text="Nb pions noir: "+str(self.compteur))
+        self.label2.config(text="Nb pions blanc: "+str(self.compteur))
+        self.label3.config(text="Tour de: "+self.joueurs[self.player])
+
 
 othellier=Othellier()
 board_jeu=Interface(othellier,joueurs)

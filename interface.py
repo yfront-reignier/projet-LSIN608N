@@ -84,7 +84,7 @@ class MainMenu(tk.Frame):
         self.jcj_button.destroy()
         self.jcia_button.destroy()
         self.button_quit.destroy()
-        self.game = GameOver(self.parent)
+        self.game = Game(self.parent)
         
 
 class Game(tk.Frame):
@@ -130,6 +130,11 @@ class Game(tk.Frame):
                 x1 = (i+1)*100
                 y1 = (j+1)*100
                 self.plateau.create_rectangle(x0,y0,x1,y1,fill="green",outline="black")
+                
+    def maj_score(self):
+        self.label.config(text="Nb pions noir: "+str(self.compteur))
+        self.label2.config(text="Nb pions blanc: "+str(self.compteur))
+        self.label3.config(text="Tour de: "+self.joueurs[self.player])
     
     
 
@@ -159,7 +164,7 @@ class GameOver(tk.Frame):
         self.label.destroy()
         self.button_quit.destroy()
         self.replay_button.destroy()
-        Game(self.parent)
+        MainMenu(self.parent)
 
 
 
