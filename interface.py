@@ -84,7 +84,7 @@ class MainMenu(tk.Frame):
         self.jcj_button.destroy()
         self.jcia_button.destroy()
         self.button_quit.destroy()
-        self.game = Game(self.parent)
+        self.game = GameOver(self.parent)
         
 
 class Game(tk.Frame):
@@ -130,20 +130,38 @@ class Game(tk.Frame):
                 x1 = (i+1)*100
                 y1 = (j+1)*100
                 self.plateau.create_rectangle(x0,y0,x1,y1,fill="green",outline="black")
+    
+    
 
 class GameOver(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
         self.parent=parent
+
         self.label = tk.Label(parent, text="Game Over",font=("Arial", 20))
         self.label.grid(row=1,column=0,columnspan=4)
 
 
-        self.button_quit = tk.Button(parent, text = "Quitter", command = parent.quit)
-        self.button_quit.grid(row=2, column=0, columnspan=4) 
+        self.button_quit = tk.Button(parent, text = "Quitter", padx=20, pady=10, command = parent.quit)
+        self.button_quit.grid(row=2, column=0, columnspan=2) 
 
-        self.button_replay = tk.Button(parent, text = "Rejouer", command = self.replay)
-        self.button_replay.grid(row=3, column=0, columnspan=4)
+        self.replay_button = tk.Button(parent, text="Rejouer",padx=20, pady=10, command = self.replay_game)
+        self.replay_button.grid(row=2, column=1, columnspan=4)
+
+        parent.grid_rowconfigure(0, weight=1)
+        parent.grid_rowconfigure(1, weight=1)
+        parent.grid_rowconfigure(2, weight=1)
+        parent.grid_columnconfigure(0, weight=1)
+        parent.grid_columnconfigure(1, weight=1)
+        parent.grid_columnconfigure(2, weight=1)
+
+    def replay_game(self):
+        self.label.destroy()
+        self.button_quit.destroy()
+        self.replay_button.destroy()
+        Game(self.parent)
+
+
 
 if __name__ == '__main__': 
     vizualiser = Interface()
