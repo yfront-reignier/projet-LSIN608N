@@ -2,36 +2,10 @@ import tkinter as tk
 from tkinter import *
 from PIL import Image, ImageTk
 import numpy as np
+from othellier import Othellier
+from pion import Pion
+from computer import Computer
 
-class othellier:
-    def __init__(self):
-        self.matrice = np.zeros((8,8),dtype=object)
-        self.joueurs = {0:"black", 1:"white"}
-
-    def __countChecker(self):
-        nb_checker_white = 0
-        nb_checker_black = 0
-        return (nb_checker_black, nb_checker_white)
-
-class Pion():
-    def __init__(self, color, pos):
-        self.color = color
-        self.position = pos
-    
-    def __repr__(self):
-        if self.color == 0:
-            return f'N'
-        if self.color == 1:
-            return f'B'
-    
-    def getColor(self):
-        return self.color
-    
-    def changeColor(self):
-        self.color = 2 % (self.color + 1)
-
-    def getPosition(self):
-        return self.position
 
 class Interface(tk.Tk):
     def __init__(self): 
@@ -90,13 +64,14 @@ class MainMenu(tk.Frame):
 class Game(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
+        self.plateau=tk.Canvas(parent,width=800,height=800,background='green')
         self.yellow_circles=[]
         self.canvas_pions={}
         # self.othellier = othellier
-        # self.matrice = othellier.matrice
+        ot=Othellier()
+        self.matrice=ot.getMatrix()
         # self.jouers = othellier.joueurs
 
-        self.plateau=tk.Canvas(parent,width=800,height=800,background='green')
         #self.plateau.bind("<Button-1>",self.click_to_draw)
         parent.grid_rowconfigure(0, weight=1)
         parent.grid_rowconfigure(1, weight=1)
@@ -116,7 +91,7 @@ class Game(tk.Frame):
 
         matrix = np.zeros((8,8))
         self.createGrid(matrix)
-        
+        self.createCircle()
 
     def createGrid(self, matrix):
         dim_matrix = matrix.shape[0]
@@ -130,6 +105,27 @@ class Game(tk.Frame):
                 x1 = (i+1)*100
                 y1 = (j+1)*100
                 self.plateau.create_rectangle(x0,y0,x1,y1,fill="green",outline="black")
+
+    def createCircle(self):
+        for x in range(len(self.matrice)):
+            for y in range(len(self.matrice)):
+                if self.matrice[x][y] != 0:
+                    x0 = x*100
+                    y0 = y*100
+                    x1 = x0 + 100
+                    y1 = y0 + 100
+                    if self.matrice[x][y].getColor() == 0:
+                        self.plateau.create_oval(x0, y0, x1, y1, fill='black')
+                    else:
+                        self.plateau.create_oval(x0, y0, x1, y1, fill='white')
+
+    def yellowCircle(self, x, y):
+        for circle in self.yellow_circles:
+            x0 = x*100
+            y0 = y*100
+            x1 = x0 + 100
+            y1 = y0 + 100
+            self.plateau.create_oval(x0, y0, x1, y1, fill='yellow')
                 
     def maj_score(self):
         self.label.config(text="Nb pions noir: "+str(self.compteur))
