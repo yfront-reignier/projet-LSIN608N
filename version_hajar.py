@@ -256,11 +256,6 @@ class Othellier:
             j-=1
             i-=1
         
-        while i>x and j>y:
-            self.matrix[i][j]=Pion(self.player,(i,j))
-            self.draw_on_board((i,j),board)
-            j-=1
-            i-=1
     
     def change_color_diagonal_3(self,x,y,w,z,board):
         i=x
@@ -303,7 +298,7 @@ class Othellier:
     def draw_on_board(self,coord,board):
         y,x=coord
         board.create_oval(x*100+35,y*100+35,x*100+65,y*100+65,fill=joueurs[self.player])
-
+    #c'est juste pour tester
     def ecriture_matrix(self,msg,ind,compteur=None, matrix=None):
         if matrix is None :
             matrix=self.matrix
@@ -325,10 +320,8 @@ class Othellier:
         if self.player==0:
             self.draw_pawn(board,couple,yellow_circles)
         else:
-            self.choisir_coup(board)
-            self.change_player()
-            self.draw_playable_pawns(yellow_circles,board)
-            
+            x,y=self.choisir_coup(board)
+            self.draw_pawn(board,(x,y),yellow_circles)
             
     def draw_playable_pawns(self,yellow_circles,board):
         for circle in yellow_circles:
@@ -340,10 +333,20 @@ class Othellier:
                 px, py = pawn
                 circle = board.create_oval(py * 100 + 35, px * 100 + 35, py * 100 + 65, px * 100 + 65, outline='yellow', width=3)
                 yellow_circles.append(circle)
-                
+    #c'etait juste ppour tester 
+    def player_pawn(self):
+        liste=[]
+        for row in self.matrix    :
+            for elem in row:
+                if elem !=0 and elem.get_couleur()==0:
+                    liste.append(elem.get_coordonnee())
+        return liste       
     def draw_pawn(self,board,couple,yellow_circles):
-        x=(couple[0]-couple[0]%100)//100
-        y=(couple[1]-couple[1]%100)//100
+        if self.player==0:
+            x=(couple[0]-couple[0]%100)//100
+            y=(couple[1]-couple[1]%100)//100
+        else:
+            y,x=couple
         possibilities=self.jeu()
         temp=[]
         possible=False
@@ -402,8 +405,8 @@ class Othellier:
         meilleur_coups = [move for move, value in scores.items() if value==max_gain]
 
         meilleur_coup = self.simulate_n_moves(meilleur_coups, profondeur)
-        self.matrix[meilleur_coup]=Pion(1,meilleur_coup)
-        self.draw_on_board(meilleur_coup,board)
+        # self.matrix[meilleur_coup]=Pion(1,meilleur_coup)
+        return meilleur_coup
         
         return meilleur_coup
     def verif_zero(self):
@@ -485,6 +488,5 @@ class Interface():
 
 othellier=Othellier()
 board_jeu=Interface(othellier,joueurs)
-# print(othellier.jeu(othellier.player))
-# othellier.choisir_coup()
+
 
