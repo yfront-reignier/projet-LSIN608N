@@ -289,16 +289,16 @@ class Othellier:
             self.change_color_line(x,y,w,z,board)
         if x!=w and y!=z:
             if w<x and z<y:
-                self.change_color_diagonal_1(self,x,y,w,z,board)
+                self.change_color_diagonal_1(x,y,w,z,board)
             # en haut a gauche
             if w>x and z>y:
-                self.change_color_diagonal_2(self,x,y,w,z,board)
+                self.change_color_diagonal_2(x,y,w,z,board)
             # en haut a droite
             if w>x and z<y:
-                self.change_color_diagonal_3(self,x,y,w,z,board)
+                self.change_color_diagonal_3(x,y,w,z,board)
             #en bas a gauche
             if x>w and y<z:
-                self.change_color_diagonal_4(self,x,y,w,z,board)
+                self.change_color_diagonal_4(x,y,w,z,board)
 
     def draw_on_board(self,coord,board):
         y,x=coord
@@ -406,7 +406,19 @@ class Othellier:
         self.draw_on_board(meilleur_coup,board)
         
         return meilleur_coup
-
+    def verif_zero(self):
+        for i in self.matrice:
+            for j in self.matrice:
+                if self.matrice[i][j]==0:
+                    return False
+        return True
+    
+    def verif_poss(self):
+        if not self.jeu():
+            self.change_player()
+            if not self.jeu():
+                return True
+        return False
 
 class Pion():
     def __init__(self,couleur,coord):
