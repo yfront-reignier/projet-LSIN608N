@@ -14,13 +14,14 @@ class Othellier:
 
     def placePaw(self, position):
         possibilities = self.calculatePossibilities()
-        if not self.__isValidPosition(position) or position not in possibilities.keys():
+        playable = [pos for positions in possibilities.values() for pos in positions]
+        if not self.__isValidPosition(position) or position not in playable:
             print("Invalid position")
             return False
 
         if self.othellier_matrix[position[0], position[1]] == 0:
             self.othellier_matrix[position[0], position[1]] = Paw(self.player, position)
-            self._takePaws(possibilities[position])
+            self._takePaws(self._findOpponentPaws(position[0], position[1]))
             self.changePlayer()
             return True
         else:
@@ -44,6 +45,7 @@ class Othellier:
         print(self.othellier_matrix)
 
     def calculatePossibilities(self):
+        # Calcule tous les coups possibles pour le joueur actuel
         possibilities = {}
 
         # Récupère tous les pions du joueur actuel
@@ -58,7 +60,9 @@ class Othellier:
         for paw in player_paws:
             x, y = paw
             for dx, dy in directions:
-                self.__checkDirection(x, y, dx, dy, possibilities, paw)
+                valid_positions = self.__checkDirection(x, y, dx, dy, paw)
+                if valid_positions:
+                    possibilities.setdefault(paw, []).extend(valid_positions)
 
         return possibilities
 
@@ -66,6 +70,31 @@ class Othellier:
     def _takePaws(self, paws_list):
         for paw in paws_list:
             paw.changeColor()
+
+    def _findOpponentPaws(self, x, y):
+        opponent_paws = []
+        directions = [
+            (0, 1), (1, 0), (1, 1), (-1, -1),  
+            (0, -1), (-1, 0), (-1, 1), (1, -1)
+        ]
+
+        for dx, dy in directions:
+            i, j = x + dx, y + dy
+            temp_opponents = []  # Liste temporaire pour stocker les pions adverses dans cette direction
+            while self.__isValidPosition((i, j)):
+                current_paw = self.othellier_matrix[i, j]
+                if current_paw == 0:  # Case vide
+                    break
+                elif current_paw.getColor() != self.player:  # Pion adverse
+                    temp_opponents.append(current_paw)  # Ajoute le pion adverse à la liste temporaire
+                else:  # Pion du joueur
+                    # Si un pion du joueur est rencontré, ajoute les pions adverses entre les deux
+                    opponent_paws.extend(temp_opponents)
+                    break
+                i += dx
+                j += dy
+
+        return opponent_paws
 
     def _isEmpty(self):
         return not np.any(self.othellier_matrix)
@@ -89,8 +118,8 @@ class Othellier:
         )
         return nb_black, nb_white
 
-    def __isValidPosition(self, pos):
-        return 0 <= pos[0] < 8 and 0 <= pos[1] < 8
+    def __isValidPosition(self, position):
+        return 0 <= position[0] < 8 and 0 <= position[1] < 8
 
     def __getPlayerPaws(self):
         paws = []
@@ -101,29 +130,24 @@ class Othellier:
                     paws.append((i, j))
         return paws
 
-    def __findOpponentPaws(self, x, y):
-        opponent_paws = []
-        for i in range(x - 1, x + 2):
-            for j in range(y - 1, y + 2):
-                if self.__isValidPosition((i, j)) and (i != x or j != y):
-                    paw = self.othellier_matrix[i, j]
-                    if paw != 0 and paw.getColor() != self.player:
-                        opponent_paws.append((i, j))
-        return opponent_paws
-
-    def __checkDirection(self, x, y, dx, dy, possibilities, paw):
+    def __checkDirection(self, x, y, dx, dy, paw, collect_opponents=False):
         i, j = x + dx, y + dy
         found_opponent = False
+        opponents = []  # Liste pour collecter les pions adverses
 
         while self.__isValidPosition((i, j)):
             current_paw = self.othellier_matrix[i, j]
-            if current_paw == 0:
-                if found_opponent:
-                    possibilities.setdefault(paw, []).append((i, j))
+            if current_paw == 0:  # Case vide
+                if found_opponent and not collect_opponents:
+                    return [(i, j)]  # Retourne la position valide
                 break
-            elif current_paw.getColor() != self.player:
+            elif current_paw.getColor() != self.player:  # Pion adverse
                 found_opponent = True
-            else:
+                if collect_opponents:
+                    opponents.append((i, j))  # Collecte les pions adverses
+            else:  # Pion du joueur
                 break
             i += dx
             j += dy
+
+        return opponents if collect_opponents else []

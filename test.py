@@ -27,8 +27,10 @@ class TestOthellier(unittest.TestCase):
     def testPlacePaw(self):
         othellier = Othellier()
         othellier.placePaw((0, 0))
-        self.assertIsInstance(othellier.othellier_matrix[0, 0], Paw)
-        self.assertEqual(othellier.othellier_matrix[0, 0].getColor(), 0)
+        self.assertEqual(othellier.othellier_matrix[0, 0], 0)
+        othellier.placePaw((3, 5))
+        self.assertIsInstance(othellier.othellier_matrix[3, 5], Paw)
+        self.assertEqual(othellier.othellier_matrix[3, 5].getColor(), 0)
 
     def testWinner(self):
         othellier = Othellier()
@@ -50,6 +52,62 @@ class TestOthellier(unittest.TestCase):
 
         # Check if the calculated possibilities match the expected ones
         self.assertEqual(possibilities, expected_possibilities)
+
+    def testFindOpponentPaws(self):
+        # Initialisation de l'othellier
+        othellier = Othellier()
+
+        # Placement des pions pour le test
+        othellier.othellier_matrix[3, 3] = Paw(0, (3, 3))  # Pion du joueur
+        othellier.othellier_matrix[3, 4] = Paw(1, (3, 4))  # Pion adverse
+        othellier.othellier_matrix[3, 5] = Paw(1, (3, 5))  # Pion adverse
+        othellier.othellier_matrix[3, 6] = Paw(0, (3, 6))  # Pion du joueur
+
+        # Appel de la méthode pour trouver les pions adverses
+        opponent_paws = othellier._findOpponentPaws(3, 3)
+
+        # Vérification des résultats
+        expected_opponents = [
+            othellier.othellier_matrix[3, 4],
+            othellier.othellier_matrix[3, 5],
+        ]
+        self.assertEqual(opponent_paws, expected_opponents)
+
+    def testFindOpponentPawsEmpty(self):
+        # Initialisation de l'othellier
+        othellier = Othellier()
+
+        # Placement des pions pour le test
+        othellier.othellier_matrix[3, 3] = Paw(0, (3, 3))  # Pion du joueur
+        othellier.othellier_matrix[3, 4] = 0  # Case vide
+        othellier.othellier_matrix[3, 5] = Paw(1, (3, 5))  # Pion adverse
+        othellier.othellier_matrix[3, 6] = Paw(0, (3, 6))  # Pion du joueur
+
+        # Appel de la méthode pour trouver les pions adverses
+        opponent_paws = othellier._findOpponentPaws(3, 3)
+
+        # Vérification des résultats (aucun pion adverse entre les pions du joueur)
+        self.assertEqual(opponent_paws, [])
+
+    def testFindOpponentPawsDiagonal(self):
+        # Initialisation de l'othellier
+        othellier = Othellier()
+
+        # Placement des pions pour le test
+        othellier.othellier_matrix[3, 3] = Paw(0, (3, 3))  # Pion du joueur
+        othellier.othellier_matrix[4, 4] = Paw(1, (4, 4))  # Pion adverse
+        othellier.othellier_matrix[5, 5] = Paw(1, (5, 5))  # Pion adverse
+        othellier.othellier_matrix[6, 6] = Paw(0, (6, 6))  # Pion du joueur
+
+        # Appel de la méthode pour trouver les pions adverses
+        opponent_paws = othellier._findOpponentPaws(3, 3)
+
+        # Vérification des résultats
+        expected_opponents = [
+            othellier.othellier_matrix[4, 4],
+            othellier.othellier_matrix[5, 5],
+        ]
+        self.assertEqual(opponent_paws, expected_opponents)
 
 class TestPaw(unittest.TestCase):
     def testPawInitialization(self):

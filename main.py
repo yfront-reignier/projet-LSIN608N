@@ -6,8 +6,12 @@ if __name__ == '__main__':
     othellier = Othellier()
     computer = Computer()
     poss = othellier.calculatePossibilities()
-    print(poss.keys())
-    othellier.placePaw((3,5))
+    
+    othellier.placePaw((5,3))
+
+    othellier.showGrid()
+
+    othellier.placePaw((5,4))
 
     # computer.start_recursive()
     othellier.showGrid()
