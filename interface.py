@@ -23,7 +23,7 @@ class MainMenu(tk.Frame):
         self.parent=parent
         super().__init__(parent)
         
-        self.label = tk.Label(parent,text = "Othello \n ⚫ ⚪ ",bg="#e6dbbe", justify=tk.CENTER)
+        self.label = tk.Label(parent,text = "Othello \n⚫VS⚪ ",bg="#e6dbbe", justify=tk.CENTER)
         self.label.grid(row =0, column=0,rowspan=1, columnspan=4)
         self.label.config(font=("ArcadeClassic",100 ))
 
@@ -44,11 +44,16 @@ class MainMenu(tk.Frame):
                                     bg="#228B22",fg="white",activebackground="#008000",activeforeground="white",
                                     relief="raised",command=lambda: self.start_game('jvsia'))
         self.jcia_button.grid(row=1,column=1,columnspan=4)
+
+        self.button_regle = tk.Button(parent, text = "Règle du Jeu", padx=20, pady=10, bd=5, font=("Arial", 14,"bold"),
+                                    bg="#696969",fg="white",activebackground="#000000",activeforeground="white",
+                                    relief="raised", command = self.regle)
+        self.button_regle.grid(row=2,column=1,columnspan=4)
         
         self.button_quit = tk.Button(parent, text = "Quitter", padx=20, pady=10, bd=5, font=("Arial", 14,"bold"),
                                     bg="#696969",fg="white",activebackground="#000000",activeforeground="white",
                                     relief="raised", command = parent.quit)
-        self.button_quit.grid(row=2, column=0, columnspan=4)
+        self.button_quit.grid(row=2, column=0, columnspan=2)
 
         parent.grid_rowconfigure(0, weight=1)
         parent.grid_rowconfigure(1, weight=1)
@@ -58,13 +63,58 @@ class MainMenu(tk.Frame):
         parent.grid_columnconfigure(1, weight=1)
         parent.grid_columnconfigure(2, weight=1)
 
+    def regle(self):
+        self.label.destroy()
+        self.jcj_button.destroy()
+        self.jcia_button.destroy()
+        self.button_quit.destroy()
+        self.button_regle.destroy()
+        self.game = RegleDuJeu(self.parent)
+
     def start_game(self,mode):
         self.label.destroy()
         self.jcj_button.destroy()
         self.jcia_button.destroy()
         self.button_quit.destroy()
+        self.button_regle.destroy()
         self.game = Game(self.parent,mode)
         
+class RegleDuJeu(tk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.parent=parent
+
+        self.label = tk.Label(parent, text="Règle du Jeu",font=("ArcadeClassic",20),bg="#e6dbbe", justify=tk.CENTER)
+        self.label.grid(row=0,column=0)
+
+        texte = """blavblabblablalblblblblbl """
+        
+        self.ecrit=tk.Label(parent, text=texte,
+          font=("Helvetica", 12),
+          bg="#f0e6d6",
+          justify=LEFT,
+          padx=20,
+          pady=20)
+        self.ecrit.grid(row=0,column=1)
+
+        self.replay_button = tk.Button(parent, text="Retourner au Menu",padx=20, pady=10, bd=5, font=("Arial", 14,"bold"),
+                                    bg="#696969",fg="white",activebackground="#000000",activeforeground="white",
+                                    relief="raised",  command = self.replay_game)
+        self.replay_button.grid(row=1, column=1)
+
+        parent.grid_rowconfigure(0, weight=1)
+        parent.grid_rowconfigure(1, weight=1)
+        parent.grid_rowconfigure(2, weight=1)
+
+        parent.grid_columnconfigure(0, weight=1)
+        parent.grid_columnconfigure(1, weight=1)
+        parent.grid_columnconfigure(2, weight=1)
+
+    def replay_game(self):
+        self.label.destroy()
+        self.ecrit.destroy()
+        self.replay_button.destroy()
+        MainMenu(self.parent)
 
 class Game(tk.Frame):
     def __init__(self, parent,mode):
