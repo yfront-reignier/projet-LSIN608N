@@ -281,7 +281,8 @@ class Othellier:
 
     def draw_on_board(self,coord,board):
         y,x=coord
-        board.create_oval(x*100,y*100,x*100+100,y*100+100,fill=self.joueurs[self.player])
+        board.create_oval(x*100+2, y*100+2, x*100+95+2, y*100+95+2, fill='grey30', outline='')
+        board.create_oval(x*100+5,y*100+5,x*100+95,y*100+95,fill=self.joueurs[self.player])
     
     
     def click(self,board,couple,yellow_circles,mode):
@@ -303,7 +304,7 @@ class Othellier:
             for list in futur_pawns.values():
                 for pawn in list:
                     px, py = pawn
-                    circle = board.create_oval(py * 100 , px * 100 , py * 100 + 80, px * 100 + 80, outline='blue', width=3)
+                    circle = board.create_oval(py * 100+5 , px * 100+5 , py * 100 + 95, px * 100 + 95, outline='blue', width=3)
                     yellow_circles.append(circle)
       
     def draw_pawn(self,board,couple,yellow_circles,mode):
@@ -388,4 +389,31 @@ class Othellier:
         return False
     def getMatrix(self):
         return self.matrix
+    
+    def __countChecker(self):
+        nb_checker_white = 0
+        nb_checker_black = 0
+        
+        for liste in self.othellier_matrix:
+            for elm in liste:
+                if elm != 0:
+                    if elm.getColor() == 0:
+                        nb_checker_white += 1
+                    if elm.getColor() == 1:
+                        nb_checker_black += 1
+
+            return (nb_checker_black, nb_checker_white)
+        
+    def winner(self):
+        all_checkers = self.__countChecker()
+
+        if all_checkers[0] == all_checkers[1]:
+            print("Egalité")
+            return None
+        if all_checkers[0] < all_checkers[1]:
+            print("Blanc gagne")
+            return 1
+        if all_checkers[0] > all_checkers[1]:
+            print("Noir gagne")
+            return 0
 

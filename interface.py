@@ -23,25 +23,31 @@ class MainMenu(tk.Frame):
         self.parent=parent
         super().__init__(parent)
         
-        self.label = tk.Label(parent,text = "Othello", justify=tk.CENTER)
-        self.label.grid(row =0, column=0, columnspan=4)
-        self.label.config(font=("Arial", 20))
+        self.label = tk.Label(parent,text = "Othello \n ⚫ ⚪ ",bg="#e6dbbe", justify=tk.CENTER)
+        self.label.grid(row =0, column=0,rowspan=1, columnspan=4)
+        self.label.config(font=("ArcadeClassic",100 ))
 
-        self.fond = Image.open("othello.png")
-        self.fond = self.fond.resize((500,500))
-        self.fond_tk = ImageTk.PhotoImage(self.fond)
+        # self.fond = Image.open("othello.png")
+        # self.fond = self.fond.resize((500,500))
+        # self.fond_tk = ImageTk.PhotoImage(self.fond)
         
-        self.cnv = tk.Canvas(parent, width=500, height=500)
-        self.cnv.grid(row=0, column=0, rowspan=4, columnspan=3)
-        self.cnv.create_image(0, 0, image=self.fond_tk, anchor="nw")
+        # self.cnv = tk.Canvas(parent, width=500, height=500)
+        # self.cnv.grid(row=0, column=0, rowspan=4, columnspan=3)
+        # self.cnv.create_image(0, 0, image=self.fond_tk, anchor="nw")
         
-        self.jcj_button = tk.Button(parent, text="Joueur vs Joueur", padx=20, pady=10, font=("Arial", 10), command=lambda: self.start_game('jvsj'))
+        self.jcj_button = tk.Button(parent, text="Joueur vs Joueur", padx=20, pady=10, bd=5, font=("Arial", 14,"bold"),
+                                    bg="#228B22",fg="white",activebackground="#008000",activeforeground="white",
+                                    relief="raised",  command=lambda: self.start_game('jvsj'))
         self.jcj_button.grid(row=1,column=0,columnspan=2)
         
-        self.jcia_button = tk.Button(parent,text="Joueur vs IA",padx=20, pady=10, font=("Arial", 10), command=lambda: self.start_game('jvsia'))
+        self.jcia_button = tk.Button(parent,text="Joueur vs IA",padx=20, pady=10, bd=5, font=("Arial", 14,"bold"),
+                                    bg="#228B22",fg="white",activebackground="#008000",activeforeground="white",
+                                    relief="raised",command=lambda: self.start_game('jvsia'))
         self.jcia_button.grid(row=1,column=1,columnspan=4)
         
-        self.button_quit = tk.Button(parent, text = "Quitter", command = parent.quit)
+        self.button_quit = tk.Button(parent, text = "Quitter", padx=20, pady=10, bd=5, font=("Arial", 14,"bold"),
+                                    bg="#696969",fg="white",activebackground="#000000",activeforeground="white",
+                                    relief="raised", command = parent.quit)
         self.button_quit.grid(row=2, column=0, columnspan=4)
 
         parent.grid_rowconfigure(0, weight=1)
@@ -53,7 +59,6 @@ class MainMenu(tk.Frame):
         parent.grid_columnconfigure(2, weight=1)
 
     def start_game(self,mode):
-        self.cnv.destroy()
         self.label.destroy()
         self.jcj_button.destroy()
         self.jcia_button.destroy()
@@ -72,6 +77,7 @@ class Game(tk.Frame):
         # self.othellier = othellier
         self.ot=Othellier()
         self.matrice=self.ot.getMatrix()
+        self.ot.draw_playable_pawns(self.yellow_circles,self.plateau,self.mode)
         # self.jouers = othellier.joueurs
 
         # self.plateau.bind("<Button-1>",self.click_to_draw)
@@ -82,25 +88,27 @@ class Game(tk.Frame):
         parent.grid_columnconfigure(1, weight=1)
         parent.grid_columnconfigure(2, weight=1)
 
-        self.label = tk.Label(parent, text="Nb pions noir:2",font=("Arial", 20))
-        self.label.grid(row=1,column=0)
+        self.label = tk.Label(parent, text="⚫Nb pions noir:2",font=("Helvetica", 16, "bold"), fg="black", bg="#f0e6d6")
+        self.label.grid(row=2,column=0)
 
-        self.label2 = tk.Label(parent, text="Nb pions blanc:2",font=("Arial", 20))
-        self.label2.grid(row=2,column=0)
+        self.label2 = tk.Label(parent, text="⚪Nb pions blanc:2",font=("Helvetica", 16, "bold"), fg="black", bg="#f0e6d6")
+        self.label2.grid(row=1,column=0)
 
-        self.label3 = tk.Label(parent, text="Tour de: noir",font=("Arial", 20))
-        self.label3.grid(row=1,column=5)
+        self.label3 = tk.Label(parent, text="Tour de: black",font=("Helvetica", 16, "bold"), fg="black", bg="#f0e6d6")
+        self.label3.grid(row=0,column=0)
 
         matrix = np.zeros((8,8))
         self.createGrid(matrix)
         self.createCircle()
         parent.bind("<Button-3>",self.click)
+
+        
         
             
 
     def createGrid(self, matrix):
         dim_matrix = matrix.shape[0]
-        self.plateau.grid(row=1,column=1,rowspan=2,columnspan=5)
+        self.plateau.grid(row=0,column=1,rowspan=6,columnspan=6)
         self.plateau.create_rectangle(0,0,800,800,fill="green")
 
         for i in range(dim_matrix):
@@ -115,32 +123,53 @@ class Game(tk.Frame):
         for x in range(len(self.matrice)):
             for y in range(len(self.matrice)):
                 if self.matrice[x][y] != 0:
-                    x0 = x*100
-                    y0 = y*100
-                    x1 = x0 + 100
-                    y1 = y0 + 100
+                    x0 = x*100+5
+                    y0 = y*100+5
+                    x1 = x0 + 90
+                    y1 = y0 + 90
                     if self.matrice[x][y].GetColor() == 0:
+                        self.plateau.create_oval(x0+2, y0+2, x1+2, y1+2, fill='grey30', outline='')
                         self.plateau.create_oval(x0, y0, x1, y1, fill='black')
                     else:
+                        self.plateau.create_oval(x0+2, y0+2, x1+2, y1+2, fill='grey30', outline='')
                         self.plateau.create_oval(x0, y0, x1, y1, fill='white')
 
-    def yellowCircle(self, x, y):
-        for circle in self.yellow_circles:
-            x0 = x*100
-            y0 = y*100
-            x1 = x0 + 100
-            y1 = y0 + 100
-            self.plateau.create_oval(x0, y0, x1, y1, fill='yellow')
           
     def maj_score(self):
         self.label.config(text="Nb pions noir: "+str(len(self.ot.players_pawns(self.ot.matrix,0))))
         self.label2.config(text="Nb pions blanc: "+str(len(self.ot.players_pawns(self.ot.matrix,1))))
         self.label3.config(text="Tour de: "+self.ot.joueurs[self.ot.player])
-    def click(self,event,parent):
+
+    def win_lose(self,parent):
+            if self.ot.winner() == 0:
+                self.label.destroy()
+                self.label2.destroy()
+                self.label3.destroy()
+                self.plateau.destroy()
+                self.label = tk.Label(parent, text="Blanc gagne",font=("Arial", 20))
+                self.label.grid(row=1,column=0,columnspan=4)
+            elif self.ot.winner() == 1:
+                self.label.destroy()
+                self.label2.destroy()
+                self.label3.destroy()
+                self.plateau.destroy()
+                self.label = tk.Label(parent, text="Noir gagne",font=("Arial", 20))
+                self.label.grid(row=1,column=0,columnspan=4)
+            elif self.ot.winner() == None:
+                self.label.destroy()
+                self.label2.destroy()
+                self.label3.destroy()
+                self.plateau.destroy()
+                self.label = tk.Label(parent, text="Egalité",font=("Arial", 20))
+                self.label.grid(row=1,column=0,columnspan=4)
+
+            GameOver(self.parent)
+
+    def click(self,event):
         self.ot.click(self.plateau,(event.x,event.y),self.yellow_circles,self.mode)  
         self.maj_score()  
-        if self.ot.verif_poss() or self.ot.verif_zero():
-            self.game = GameOver(self.parent)
+        self.win_lose(self.parent)
+
 class GameOver(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
