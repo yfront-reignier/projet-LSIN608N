@@ -1,10 +1,14 @@
 from othellier import Othellier
-from pion import Pion
+from paw import Paw
 from computer import Computer
 
 if __name__ == '__main__':
     othellier = Othellier()
     computer = Computer()
-    computer.start_recursive()
+    poss = othellier.calculatePossibilities()
+    print(poss.keys())
+    othellier.placePaw((3,5))
+
+    # computer.start_recursive()
     othellier.showGrid()
 

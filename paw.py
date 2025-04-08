@@ -1,4 +1,4 @@
-class Pion():
+class Paw():
     def __init__(self, color, pos):
         self.color = color
         self.position = pos
@@ -13,7 +13,7 @@ class Pion():
         return self.color
     
     def changeColor(self):
-        self.color = 2 % (self.color + 1)
+        self.color = (self.color + 1) % 2
 
     def getPosition(self):
         return self.position
