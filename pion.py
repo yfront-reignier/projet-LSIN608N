@@ -9,11 +9,11 @@ class Pion():
         if self.color == 1:
             return f'B'
     
-    def getColor(self):
+    def GetColor(self):
         return self.color
     
-    def changeColor(self):
-        self.color = 2 % (self.color + 1)
+    def ChangeColor(self,new_color):
+        self.color = new_color
 
-    def getPosition(self):
+    def GetPosition(self):
         return self.position
