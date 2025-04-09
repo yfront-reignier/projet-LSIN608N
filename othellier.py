@@ -33,7 +33,6 @@ class Othellier:
             return False
 
         if self.othellier_matrix[position[0], position[1]] == 0:
-            print('nv pion',position)
             for pawn in self.related_pawns(possibilities,position):
                 self._takePaws(pawn,position,board)
             self.changePlayer()
@@ -85,8 +84,6 @@ class Othellier:
 
     ### Protected methods ###
     def _takePaws(self, pawn1,pawn2,board):
-        # for paw in paws_list:
-        #     paw.changeColor()
         dx = (pawn2[0]-pawn1[0])
         dy = (pawn2[1]-pawn1[1])
 
@@ -98,12 +95,10 @@ class Othellier:
             i += dx
             j += dy
             if self.othellier_matrix[i][j]==0:
-                print('je cree le pion',pawn2,'pour le joueur',self.player)
                 self.othellier_matrix[i][j] = Paw(self.player, (i,j))
             else:
                 self.othellier_matrix[i][j].changeColor(self.player)
             self.draw_pawn((i,j),board)
-        self.showGrid()
     def _findOpponentPaws(self, x, y):
         opponent_paws = []
         directions = [
