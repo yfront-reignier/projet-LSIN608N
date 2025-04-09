@@ -179,8 +179,8 @@ class Game(tk.Frame):
 
           
     def maj_score(self):
-        self.label.config(text="Nb pions noir: "+str(self.othellier.__countPaws()[0]))
-        self.label2.config(text="Nb pions blanc: "+str(self.othellier.__countPaws()[1]))
+        self.label.config(text="Nb pions noir: "+str(self.othellier._countPaws()[0]))
+        self.label2.config(text="Nb pions blanc: "+str(self.othellier._countPaws()[1]))
         self.label3.config(text="Tour de: "+self.color[self.othellier.GetPlayer()])
 
     def win_lose(self,parent):
@@ -210,8 +210,9 @@ class Game(tk.Frame):
 
     def click(self,event):
         self.othellier.click(self.plateau,(event.x,event.y))  
-        # self.maj_score()  
-        # self.win_lose(self.parent)
+        self.maj_score()  
+        if self.othellier._isFull() or not self.othellier.calculatePossibilities():
+            self.win_lose(self.parent)
 
 class GameOver(tk.Frame):
     def __init__(self, parent):

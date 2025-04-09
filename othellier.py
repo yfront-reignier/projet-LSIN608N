@@ -28,12 +28,12 @@ class Othellier:
     def placePaw(self, position,board=None):
         possibilities = self.calculatePossibilities()
         playable = [pos for positions in possibilities.values() for pos in positions]
-        self.showGrid()
         if not self.__isValidPosition(position) or position not in playable:
-            print("Invalid position")
+            print("Invalid position",position)
             return False
 
         if self.othellier_matrix[position[0], position[1]] == 0:
+            print('nv pion',position)
             for pawn in self.related_pawns(possibilities,position):
                 self._takePaws(pawn,position,board)
             self.changePlayer()
@@ -46,7 +46,7 @@ class Othellier:
 
 
     def winner(self):
-        nb_black, nb_white = self.__countPaws()
+        nb_black, nb_white = self._countPaws()
 
         if nb_black == nb_white:
             print("Draw")
@@ -84,7 +84,7 @@ class Othellier:
         return possibilities
 
     ### Protected methods ###
-    def _takePaws(self, pawn1,pawn2,board=None):
+    def _takePaws(self, pawn1,pawn2,board):
         # for paw in paws_list:
         #     paw.changeColor()
         dx = (pawn2[0]-pawn1[0])
@@ -98,11 +98,12 @@ class Othellier:
             i += dx
             j += dy
             if self.othellier_matrix[i][j]==0:
+                print('je cree le pion',pawn2,'pour le joueur',self.player)
                 self.othellier_matrix[i][j] = Paw(self.player, (i,j))
             else:
-                self.othellier_matrix[i][j].changeColor()
+                self.othellier_matrix[i][j].changeColor(self.player)
             self.draw_pawn((i,j),board)
-
+        self.showGrid()
     def _findOpponentPaws(self, x, y):
         opponent_paws = []
         directions = [
@@ -141,7 +142,7 @@ class Othellier:
         self.othellier_matrix[4, 3] = Paw(1, (4, 3))
         self.othellier_matrix[4, 4] = Paw(0, (4, 4))
 
-    def __countPaws(self):
+    def _countPaws(self):
         nb_black = sum(
             1 for row in self.othellier_matrix for paw in row if paw != 0 and paw.getColor() == 0
         )
@@ -193,4 +194,6 @@ class Othellier:
     def click(self,board,couple):
         position=((couple[1]-couple[1]%100)//100,(couple[0]-couple[0]%100)//100)
         self.placePaw(position,board)
+
+
 

@@ -12,8 +12,8 @@ class Paw():
     def getColor(self):
         return self.color
     
-    def changeColor(self):
-        self.color = (self.color + 1) % 2
+    def changeColor(self,new_color):
+        self.color = new_color
 
     def getPosition(self):
         return self.position
