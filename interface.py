@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 import numpy as np
 from othellier import Othellier
 from computer import Computer
+import time
 
 
 class Interface(tk.Tk):
@@ -119,9 +120,10 @@ class Game(tk.Frame):
         super().__init__(parent)
         self.mode=mode
         self.parent=parent
-        self.color={0:'Black',1:'White'}
+        self.color={0:'Noir',1:'Blanc'}
         self.plateau=tk.Canvas(parent,width=800,height=800,background='green')
-        self.yellow_circles=[]
+        self.hints=[]
+        self.hint_all_game=False
         self.canvas_pions={}
         self.othellier=Othellier()
 
@@ -132,22 +134,45 @@ class Game(tk.Frame):
         parent.grid_columnconfigure(1, weight=1)
         parent.grid_columnconfigure(2, weight=1)
 
-        self.label = tk.Label(parent, text="⚫Nb pions noir:2",font=("Helvetica", 16, "bold"), fg="black", bg="#f0e6d6")
+        self.hint=tk.Button(parent,text='Indices-Toute la partie',font=("Helvetica", 16, "bold"), fg="black", bg="#f0e6d6",command=self.show_hints_all_game)
+        self.hint.grid(row=4,column=0)
+        
+        self.hint=tk.Button(parent,text='Indices-Un tour',font=("Helvetica", 16, "bold"), fg="black", bg="#f0e6d6",command=self.show_hints)
+        self.hint.grid(row=3,column=0)
+
+        self.label = tk.Label(parent, text="⚫Pions noir: "+str(self.othellier._countPaws()[0]),font=("Helvetica", 16, "bold"), fg="black", bg="#f0e6d6")
         self.label.grid(row=2,column=0)
 
-        self.label2 = tk.Label(parent, text="⚪Nb pions blanc:2",font=("Helvetica", 16, "bold"), fg="black", bg="#f0e6d6")
+        self.label2 = tk.Label(parent, text="⚪Pions blanc: "+str(self.othellier._countPaws()[0]),font=("Helvetica", 16, "bold"), fg="black", bg="#f0e6d6")
         self.label2.grid(row=1,column=0)
 
-        self.label3 = tk.Label(parent, text="Tour de: black",font=("Helvetica", 16, "bold"), fg="black", bg="#f0e6d6")
+        self.label3 = tk.Label(parent, text="Tour du joueur: Noir",font=("Helvetica", 16, "bold"), fg="black", bg="#f0e6d6")
         self.label3.grid(row=0,column=0)
+        
+        
 
         self.createGrid(self.othellier.GetMatrix())
         self.createCircle()
         parent.bind("<Button-3>",self.click)
 
         
-        
-            
+    def show_hints_all_game(self):
+        self.show_hints()  
+        self.hint_all_game=True  
+    def show_hints(self):
+        playable = [pos for positions in self.othellier.calculatePossibilities().values() for pos in positions]      
+        for elem in playable:
+            x,y=elem
+            x0 = y*100+5
+            y0 = x*100+5
+            x1 = x0 + 95
+            y1 = y0 + 95  
+            self.hints.append(self.plateau.create_oval(x0, y0, x1, y1,outline='#17b669', fill='',width=2) )
+    def delete_hints(self):
+        if self.hints:
+            for elem in self.hints:
+                self.plateau.delete(elem)
+            self.hints.clear()
 
     def createGrid(self, matrix):
         dim_matrix = matrix.shape[0]
@@ -166,8 +191,8 @@ class Game(tk.Frame):
         for x in range(len(self.othellier.GetMatrix())):
             for y in range(len(self.othellier.GetMatrix())):
                 if self.othellier.GetMatrix()[x][y] != 0:
-                    x0 = x*100+5
-                    y0 = y*100+5
+                    x0 = y*100+5
+                    y0 = x*100+5
                     x1 = x0 + 90
                     y1 = y0 + 90
                     if self.othellier.GetMatrix()[x][y].getColor() == 0:
@@ -179,9 +204,9 @@ class Game(tk.Frame):
 
           
     def maj_score(self):
-        self.label.config(text="Nb pions noir: "+str(self.othellier._countPaws()[0]))
-        self.label2.config(text="Nb pions blanc: "+str(self.othellier._countPaws()[1]))
-        self.label3.config(text="Tour de: "+self.color[self.othellier.GetPlayer()])
+        self.label.config(text="Pions noir: "+str(self.othellier._countPaws()[0]))
+        self.label2.config(text="Pions blanc: "+str(self.othellier._countPaws()[1]))
+        self.label3.config(text="Tour du joueur: "+self.color[self.othellier.GetPlayer()])
 
     def win_lose(self,parent):
             if self.othellier.winner() == 0:
@@ -209,10 +234,16 @@ class Game(tk.Frame):
             GameOver(self.parent)
 
     def click(self,event):
-        self.othellier.click(self.plateau,(event.x,event.y))  
-        self.maj_score()  
-        if self.othellier._isFull() or not self.othellier.calculatePossibilities():
+        self.delete_hints() 
+        self.othellier.click(self.plateau,(event.x,event.y)) 
+        self.maj_score()
+        if self.hint_all_game:
+            self.show_hints()
+        time.sleep(0.5)  
+        if self.othellier.game_over():
             self.win_lose(self.parent)
+        
+            
 
 class GameOver(tk.Frame):
     def __init__(self, parent):
@@ -242,7 +273,7 @@ class GameOver(tk.Frame):
         self.replay_button.destroy()
         MainMenu(self.parent)
 
-
+    
 
 if __name__ == '__main__': 
     vizualiser = Interface()

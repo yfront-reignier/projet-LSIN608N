@@ -26,23 +26,28 @@ class Othellier:
         return concerned_pawns
 
     def placePaw(self, position,board=None):
+        
         possibilities = self.calculatePossibilities()
         playable = [pos for positions in possibilities.values() for pos in positions]
+        if not possibilities:
+            self.changePlayer()
+            print('Can not make any move')
+            return False
+
         if not self.__isValidPosition(position) or position not in playable:
-            print("Invalid position",position)
+            print("Invalid position")
             return False
 
         if self.othellier_matrix[position[0], position[1]] == 0:
             for pawn in self.related_pawns(possibilities,position):
                 self._takePaws(pawn,position,board)
             self.changePlayer()
-            
             return True
+        
         else:
             print("There is already a paw here.")
             return False
         
-
 
     def winner(self):
         nb_black, nb_white = self._countPaws()
@@ -59,7 +64,7 @@ class Othellier:
 
     def showGrid(self):
         print(self.othellier_matrix)
-
+    
     def calculatePossibilities(self):
         # Calcule tous les coups possibles pour le joueur actuel
         possibilities = {}
@@ -185,10 +190,23 @@ class Othellier:
         board.create_oval(position[1]*100+5,position[0]*100+5,position[1]*100+95,position[0]*100+95,fill=color)
                 
             
-
+    def neither_players_can_play(self):
+        if not self.calculatePossibilities():
+            self.changePlayer()
+            if not self.calculatePossibilities():
+                self.changePlayer()
+                return True
+        return False
+        
     def click(self,board,couple):
         position=((couple[1]-couple[1]%100)//100,(couple[0]-couple[0]%100)//100)
         self.placePaw(position,board)
 
 
+    def game_over(self):
+        if self._isFull() or self.neither_players_can_play():
+            return True
+        return False
 
+
+ot=Othellier()
