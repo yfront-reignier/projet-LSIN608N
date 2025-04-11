@@ -4,7 +4,7 @@
 
 import numpy as np
 import tkinter as tk
-from paw import Paw
+from pawn import Paw
 
 class Othellier:
     def __init__(self):
