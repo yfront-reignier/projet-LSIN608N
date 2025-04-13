@@ -147,6 +147,7 @@ class Othellier:
     def __initializeGame(self):
         self.othellier_matrix[3, 3] = Paw(0, (3, 3))
         self.othellier_matrix[3, 4] = Paw(1, (3, 4))
+        self.othellier_matrix[3, 5] = Paw(1, (3, 5))
         self.othellier_matrix[4,3] = Paw(1, (4, 3))
         self.othellier_matrix[4,4] = Paw(0, (4, 4))
 

@@ -1,54 +1,39 @@
 # COMPUTER
 
 from othellier import Othellier
+import copy
 
 class Computer(Othellier):
     def __init__(self,othellier:Othellier):
         super().__init__()
         self.othellier=othellier
     
-#     def evaluation(self,possibilities:dict,pos2):
-#         liste_pos1=[]
-#         counter=0
-#         for key,liste in possibilities.items():
-#             if pos2 in liste:
-#                 liste_pos1.append(key)
-#         for pos1 in liste_pos1:
-#             counter+=self._takePaws(pos1,pos2,False)
-#         return counter
-            
+    def evaluation(self,plateau:Othellier):
 
-#     def minimax(self,profondeur,move=None):
-#         if self.othellier.game_over() or profondeur==0:
-#             return self.evaluation(self.calculatePossibilities(),move)
-#         playable=[]
-#         for positions in self.othellier.calculatePossibilities().values():
-#             for pos in positions:
-#                 if pos not in playable:
-#                     playable.append(pos)
-#         if self.othellier.player==0:
-#             meilleure_score=float('-inf')
-#             for move in playable:
-#                 if self.othellier.placePaw(move,False):
-#                     score=self.minimax(profondeur-1,move)
-#                     self.othellier_matrix[move]=0
-#                     if score>meilleure_score:
-#                         meilleure_score=score
-#                         meilleure_coup=move            
-#         else:
-#             meilleure_score=float('inf')
-#             for move in playable:
-#                 if self.othellier.placePaw(move,False):
-#                     score=self.minimax(profondeur-1)
-#                     self.othellier_matrix[move]=0
-#                     if score>meilleure_score:
-#                         meilleure_score=score
-#                         meilleure_coup=move 
+        if plateau.player==0:
+            return plateau._countPaws()[1]-plateau._countPaws()[0]
+        else:
+            return plateau._countPaws()[0]-plateau._countPaws()[1]
         
-        
-#         return(meilleure_score,meilleure_coup)
+    def minimax(self,plateau:Othellier,profondeur):
+        if plateau.game_over() or profondeur==1:
+            return self.evaluation(plateau),None
+
+        meilleur_score=float('-inf') if plateau.player==1 else float('inf')
+        meilleur_coup=None
+        playable = [pos for positions in plateau.calculatePossibilities().values() for pos in positions]
+        if playable:
+            for move in playable:
+                new_plateau = copy.deepcopy(plateau)
+                new_plateau.placePaw(move)
+                score, _ = self.minimax(new_plateau, profondeur - 1)
+
+                if plateau.player == 1 and score > meilleur_score:
+                    meilleur_score = score
+                    meilleur_coup = move
+                elif plateau.player == 0 and score < meilleur_score:
+                    meilleur_score = score
+                    meilleur_coup = move
+
+            return  meilleur_coup
     
-# com=Computer(Othellier())
-# com.showGrid()
-# print(com.minimax(3)  
-# )    
