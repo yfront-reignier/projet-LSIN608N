@@ -29,27 +29,29 @@ class Othellier:
                 concerned_pawns.append(key)
         return concerned_pawns
 
-    def placePaw(self, position,draw_or_not:bool,board=None):
+    def placePaw(self, position):
         possibilities = self.calculatePossibilities()
         playable = [pos for positions in possibilities.values() for pos in positions]
         if not possibilities:
             self.changePlayer()
             print('Can not make any move')
-            return False
+            return False,[]
 
         if not self.__isValidPosition(position) or position not in playable:
             print("Invalid position")
-            return False
+            return False,[]
 
         if self.othellier_matrix[position[0], position[1]] == 0:
+            pawns=set()
             for pawn in self.related_pawns(possibilities,position):
-                self._takePaws(pawn,position,draw_or_not,board)
-            self.changePlayer()
-            return True
+                liste=self._takePaws(pawn,position)
+                pawns.update(liste)
+            # self.changePlayer()
+            return True,pawns
         
         else:
             print("There is already a paw here.")
-            return False
+            return False,[]
         
 
     def winner(self):
@@ -91,26 +93,24 @@ class Othellier:
         return possibilities
 
     ### Protected methods ###
-    def _takePaws(self, pawn1,pawn2,draw=False,board=None):
-        counter=-1
+    def _takePaws(self, pawn1,pawn2):
         dx = (pawn2[0]-pawn1[0])
         dy = (pawn2[1]-pawn1[1])
 
         dx = dx//abs(dx) if dx != 0 else 0
         dy = dy//abs(dy) if dy != 0 else 0
-
+        new_pawns=[]
         i,j=pawn1
         while (i-pawn2[0])*dx<0 or (j-pawn2[1])*dy<0:
-            counter+=1
             i += dx
             j += dy
             if self.othellier_matrix[i][j]==0:
                 self.othellier_matrix[i][j] = Paw(self.player, (i,j))
             else:
                 self.othellier_matrix[i][j].changeColor(self.player)
-            if draw:
-                self.draw_pawn((i,j),board)
-        return counter
+            new_pawns.append((i,j))
+            
+        return new_pawns
     
     def _findOpponentPaws(self, x, y):
         opponent_paws = []
@@ -147,9 +147,8 @@ class Othellier:
     def __initializeGame(self):
         self.othellier_matrix[3, 3] = Paw(0, (3, 3))
         self.othellier_matrix[3, 4] = Paw(1, (3, 4))
-        self.othellier_matrix[3, 5] = Paw(1, (3, 5))
-        self.othellier_matrix[4, 5] = Paw(1, (4, 3))
-        self.othellier_matrix[5,4] = Paw(0, (4, 4))
+        self.othellier_matrix[4,3] = Paw(1, (4, 3))
+        self.othellier_matrix[4,4] = Paw(0, (4, 4))
 
     def _countPaws(self):
         nb_black = sum(
@@ -207,9 +206,6 @@ class Othellier:
                 return True
         return False
         
-    def click(self,board,couple):
-        position=((couple[1]-couple[1]%100)//100,(couple[0]-couple[0]%100)//100)
-        self.placePaw(position,board)
 
 
     def game_over(self):

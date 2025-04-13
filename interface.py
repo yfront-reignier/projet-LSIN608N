@@ -264,9 +264,22 @@ class Game(tk.Frame):
                 text="Match nul"
             GameOver(self.parent,text)
 
+    def play_move(self,couple):
+        move=((couple[1]-couple[1]%100)//100,(couple[0]-couple[0]%100)//100)
+        success,pawns=self.othellier.placePaw(move)
+        if success:
+            for pawn in pawns:
+                self.draw(pawn)
+            self.othellier.changePlayer()
+    def draw(self,position):
+        color='white' if self.othellier.player==1 else 'black'
+        self.plateau.create_oval(position[1]*100+5,position[0]*100+5,position[1]*100+95,position[0]*100+95,fill=color)
+                
+        
     def click(self,event):
         self.delete_hints() 
-        self.othellier.click(self.plateau,(event.x,event.y)) 
+        self.play_move((event.x,event.y))
+        # self.othellier.click(self.plateau,(event.x,event.y)) 
         self.maj_score()
         if self.hint_all_game:
             self.show_hints()
