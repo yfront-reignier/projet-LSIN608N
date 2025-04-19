@@ -237,7 +237,7 @@ class Game(tk.Frame):
                 self.plateau.destroy()
                 self.hint.destroy()
                 self.all_hints.destroy()
-                text="Joueur blanc gagne"
+                text="Joueur noir gagne"
             elif self.othellier.winner() == 1:
                 self.bg.destroy()
                 self.bg2.destroy()
@@ -249,7 +249,7 @@ class Game(tk.Frame):
                 self.plateau.destroy()
                 self.hint.destroy()
                 self.all_hints.destroy()
-                text="Joueur noir gagne"
+                text="Joueur blanc gagne"
             elif self.othellier.winner() == None:
                 self.bg.destroy()
                 self.bg2.destroy()
@@ -265,25 +265,24 @@ class Game(tk.Frame):
             GameOver(self.parent,text)
 
     def play_move(self,couple):
-        print(self.othellier.player)
         move=((couple[1]-couple[1]%100)//100,(couple[0]-couple[0]%100)//100)
-        print(move)
         success,pawns=self.othellier.placePaw(move)
         if success:
             for pawn in pawns:
                 self.draw(pawn)
             self.othellier.changePlayer()
-        print(self.othellier.player)
+        
     def draw(self,position):
         color='white' if self.othellier.player==1 else 'black'
         self.plateau.create_oval(position[1]*100+5,position[0]*100+5,position[1]*100+95,position[0]*100+95,fill=color)
     
     def ai_vs_player(self,couple):
-        if self.othellier.player==0:
-            self.play_move(couple) 
-        else:
+        self.play_move(couple) 
+        self.update()
+        time.sleep(0.1) 
+        if self.othellier.player==1:
             ai= Computer(self.othellier)
-            move=ai.minimax(self.othellier,3)
+            move=(ai.minimax(self.othellier,3))[1]
             if move:
                 self.play_move((move[1]*100,move[0]*100))
             

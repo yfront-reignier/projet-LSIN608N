@@ -52,7 +52,8 @@ class Othellier:
         else:
             print("There is already a paw here.")
             return False,[]
-        
+    
+
 
     def winner(self):
         nb_black, nb_white = self._countPaws()
@@ -104,10 +105,10 @@ class Othellier:
         while (i-pawn2[0])*dx<0 or (j-pawn2[1])*dy<0:
             i += dx
             j += dy
-            if self.othellier_matrix[i][j]==0:
-                self.othellier_matrix[i][j] = Paw(self.player, (i,j))
+            if self.othellier_matrix[i,j]==0:
+                self.othellier_matrix[i,j] = Paw(self.player, (i,j))
             else:
-                self.othellier_matrix[i][j].changeColor(self.player)
+                self.othellier_matrix[i,j].changeColor(self.player)
             new_pawns.append((i,j))
             
         return new_pawns
