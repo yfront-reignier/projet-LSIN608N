@@ -282,7 +282,7 @@ class Game(tk.Frame):
         time.sleep(0.1) 
         if self.othellier.player==1:
             ai= Computer(self.othellier)
-            move=(ai.minimax(self.othellier,3))[1]
+            move=(ai.minimax(self.othellier,7))[1]
             if move:
                 self.play_move((move[1]*100,move[0]*100))
             
