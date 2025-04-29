@@ -85,10 +85,28 @@ class RegleDuJeu(tk.Frame):
         super().__init__(parent)
         self.parent=parent
 
-        self.label = tk.Label(parent, text="Règle du Jeu",font=("ArcadeClassic",20),bg="#e6dbbe", justify=tk.CENTER)
+        self.label = tk.Label(parent, text="Regle du Jeu",font=("ArcadeClassic",20),bg="#e6dbbe", justify=tk.CENTER)
         self.label.grid(row=0,column=0)
 
-        texte = """blavblabblablalblblblblbl """
+        texte = """        
+        Chaque joueur se voit attribué une couleur et reçoit des pions.
+        Chacun étant noir d'un côté et blanc de l'autre.
+        Noir commence la partie en plaçant le premier pion à un endroit qui enferme un pion de l'adversaire.
+
+        <Enfermer> un disque signifie entourer un ou plusieurs pion de votre adversaire avec deuax de vos propres pions.
+
+        Tous les pions noirs situés entre les deux pions blancs sont ensuite retournés (captués) et affichent ainsi leur côté blanc.
+        Un pion peut capturer n'importe quel nombre de pions de l'adversaire
+        (en diagonale, à l'horizontale ou à verticale)
+
+        Si un joueur ne peut pas enfermer au moin un pion de l'adversaire, il est forcé de passer son tour.
+        Quand aucun des joueurs ne peut plus déplacer de pions, alors la partie s'arrête.
+        Le gagnant en fin de partie est celui qui possède le plus de pions sur le plateau. 
+        
+        Les indice dans le jeu:
+        - Indices-Un tour: vous donne les indices pour le tour en cours.
+        - Indices-Toute la partie: vous donne les indices pour toute la partie.
+        """
         
         self.ecrit=tk.Label(parent, text=texte,
           font=("Helvetica", 12),
@@ -139,7 +157,7 @@ class Game(tk.Frame):
         self.bg=tk.Canvas(parent,width=250,height=750,bg="#fdfbf9")
         self.bg.place(x=20,y=25)
 
-        self.bg2=tk.Canvas(parent,width=250,height=750,bg="#a67d3c")
+        self.bg2=tk.Canvas(parent,width=250,height=750,bg="#c8ad7f")
         self.bg2.place(x=1250, y=25)
 
         self.label3 = tk.Label(parent, text="Tour du joueur: Noir",font=("Helvetica", 16, "bold"), fg="black", bg="#f0e6d6")
@@ -154,7 +172,7 @@ class Game(tk.Frame):
         self.label = tk.Label(parent, text="⚫Pions noir: ",font=("Helvetica", 16, "bold"), fg="black", bg="#f0e6d6")
         self.label.place(x=1295,y=28)
 
-        self.score_black = tk.Label(parent, text= str(self.othellier._countPaws()[0]), font=("Helvetica", 36, "bold"), fg="black", bg="#a67d3c")
+        self.score_black = tk.Label(parent, text= str(self.othellier._countPaws()[0]), font=("Helvetica", 36, "bold"), fg="black", bg="#c8ad7f")
         self.score_black.place(x=1340,y=300)
         
         self.hint=tk.Button(parent,text='Indices-Un tour',padx=20, pady=10, bd=5, font=("Helvetica", 14,"bold"),
