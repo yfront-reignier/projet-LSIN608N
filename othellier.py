@@ -1,7 +1,3 @@
-
-
-# OTHELLO
-
 import numpy as np
 import tkinter as tk
 from pawn import Paw
@@ -13,16 +9,18 @@ class Othellier:
         self.othellier_matrix = np.zeros((8, 8), dtype=object)
         self.__initializeGame()
 
-    def GetMatrix(self):
+    def getMatrix(self):
         return self.othellier_matrix
     
-    def GetPlayer(self):
+    def getPlayer(self):
         return self.player
+    
     ### Public methods ###
+
     def changePlayer(self):
         self.player = (self.player + 1) % 2
 
-    def related_pawns(self,playbles_pawns,new_pawn):
+    def relatedPawns(self,playbles_pawns,new_pawn):
         concerned_pawns=[]
         for key,value in playbles_pawns.items():
             if new_pawn in value:
@@ -43,7 +41,7 @@ class Othellier:
 
         if self.othellier_matrix[position[0], position[1]] == 0:
             pawns=set()
-            for pawn in self.related_pawns(possibilities,position):
+            for pawn in self.relatedPawns(possibilities,position):
                 liste=self._takePaws(pawn,position)
                 pawns.update(liste)
             # self.changePlayer()
@@ -52,8 +50,6 @@ class Othellier:
         else:
             print("There is already a paw here.")
             return False,[]
-    
-
 
     def winner(self):
         nb_black, nb_white = self._countPaws()
@@ -93,7 +89,8 @@ class Othellier:
 
         return possibilities
 
-    ### Protected methods ###
+    ### Méthodes protégées ###
+
     def _takePaws(self, pawn1,pawn2):
         dx = (pawn2[0]-pawn1[0])
         dy = (pawn2[1]-pawn1[1])
@@ -144,7 +141,8 @@ class Othellier:
     def _isFull(self):
         return not np.any(self.othellier_matrix == 0)
 
-    ### Private methods ###
+    ### Méthodes privées ###
+
     def __initializeGame(self):
         for i in range(2):
             for j in range(8):
@@ -202,12 +200,11 @@ class Othellier:
 
         return opponents if collect_opponents else []
 
-    def draw_pawn(self,position,board):
+    def drawPawn(self,position,board):
         color='white' if self.player==1 else 'black'
         board.create_oval(position[1]*100+5,position[0]*100+5,position[1]*100+95,position[0]*100+95,fill=color)
-                
-            
-    def neither_players_can_play(self):
+                 
+    def notPlayable(self):
         if not self.calculatePossibilities():
             self.changePlayer()
             if not self.calculatePossibilities():
@@ -215,10 +212,8 @@ class Othellier:
                 return True
         return False
         
-
-
     def game_over(self):
-        if self._isFull() or self.neither_players_can_play():
+        if self._isFull() or self.notPlayable():
             return True
         return False
 

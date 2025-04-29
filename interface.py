@@ -16,7 +16,6 @@ class Interface(tk.Tk):
         self.config = self.configure(bg = "#e6dbbe")
         self.width=self.winfo_screenwidth()
         self.height=self.winfo_screenheight()
-
         self.mainmenu = MainMenu(self)
 
 class MainMenu(tk.Frame):
@@ -48,7 +47,7 @@ class MainMenu(tk.Frame):
 
         self.button_regle = tk.Button(parent, text = "Règle du Jeu", padx=20, pady=10, bd=5, font=("Arial", 14,"bold"),
                                     bg="#696969",fg="white",
-                                    relief="raised", command = self.regle)
+                                    relief="raised", command = self.regles)
         self.button_regle.grid(row=2,column=1,columnspan=4)
         
         self.button_quit = tk.Button(parent, text = "Quitter", padx=20, pady=10, bd=5, font=("Arial", 14,"bold"),
@@ -64,7 +63,7 @@ class MainMenu(tk.Frame):
         parent.grid_columnconfigure(1, weight=1)
         parent.grid_columnconfigure(2, weight=1)
 
-    def regle(self):
+    def regles(self):
         self.label.destroy()
         self.jcj_button.destroy()
         self.jcia_button.destroy()
@@ -186,7 +185,7 @@ class Game(tk.Frame):
 
         
 
-        self.createGrid(self.othellier.GetMatrix())
+        self.createGrid(self.othellier.getMatrix())
         self.createCircle()
         parent.bind("<Button-3>",self.click)
 
@@ -223,14 +222,14 @@ class Game(tk.Frame):
                 self.plateau.create_rectangle(x0,y0,x1,y1,fill="green",outline="black")
 
     def createCircle(self):
-        for x in range(len(self.othellier.GetMatrix())):
-            for y in range(len(self.othellier.GetMatrix())):
-                if self.othellier.GetMatrix()[x][y] != 0:
+        for x in range(len(self.othellier.getMatrix())):
+            for y in range(len(self.othellier.getMatrix())):
+                if self.othellier.getMatrix()[x][y] != 0:
                     x0 = y*100+5
                     y0 = x*100+5
                     x1 = x0 + 90
                     y1 = y0 + 90
-                    if self.othellier.GetMatrix()[x][y].getColor() == 0:
+                    if self.othellier.getMatrix()[x][y].getColor() == 0:
                         self.plateau.create_oval(x0+2, y0+2, x1+2, y1+2, fill='grey30', outline='')
                         self.plateau.create_oval(x0, y0, x1, y1, fill='black')
                     else:
@@ -241,7 +240,7 @@ class Game(tk.Frame):
     def maj_score(self):
         self.score_black.config(text=str(self.othellier._countPaws()[0]))
         self.score_white.config(text=str(self.othellier._countPaws()[1]))
-        self.label3.config(text="Tour du joueur: "+self.color[self.othellier.GetPlayer()])
+        self.label3.config(text="Tour du joueur: "+self.color[self.othellier.getPlayer()])
 
     def win_lose(self,parent):
             if self.othellier.winner() == 0:
@@ -320,8 +319,6 @@ class Game(tk.Frame):
 
     # def show_bg(self):
 
-        
-            
 
 class GameOver(tk.Frame):
     def __init__(self, parent,text):
