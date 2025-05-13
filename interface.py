@@ -159,16 +159,16 @@ class Game(tk.Frame):
         self.bg2=tk.Canvas(parent,width=250,height=750,bg="#c8ad7f")
         self.bg2.place(x=1250, y=25)
 
-        self.label3 = tk.Label(parent, text="Tour du joueur: Noir",font=("Helvetica", 16, "bold"), fg="black", bg="#f0e6d6")
-        self.label3.place(x=1285,y=550)
+        self.label3 = tk.Label(parent, text="Tour du joueur: Noir",font=("Helvetica", 16, "bold"), fg="black", bg="#c8ad7f")
+        self.label3.place(x=1260,y=550)
 
-        self.label2 = tk.Label(parent, text="⚪Pions blanc: ", font=("Helvetica", 16, "bold"), fg="black", bg="#f0e6d6")
+        self.label2 = tk.Label(parent, text="⚪Pions blanc: ", font=("Helvetica", 16, "bold"), fg="black", bg="white")
         self.label2.place(x=65,y=28)
 
         self.score_white = tk.Label(parent, text= str(self.othellier._countPaws()[1]), font=("Helvetica", 36, "bold"), fg="black", bg="#fdfbf9")
         self.score_white.place(x=100,y=300)
 
-        self.label = tk.Label(parent, text="⚫Pions noir: ",font=("Helvetica", 16, "bold"), fg="black", bg="#f0e6d6")
+        self.label = tk.Label(parent, text="⚫Pions noir: ",font=("Helvetica", 16, "bold"), fg="black", bg="#c8ad7f")
         self.label.place(x=1295,y=28)
 
         self.score_black = tk.Label(parent, text= str(self.othellier._countPaws()[0]), font=("Helvetica", 36, "bold"), fg="black", bg="#c8ad7f")
@@ -254,7 +254,7 @@ class Game(tk.Frame):
                 self.plateau.destroy()
                 self.hint.destroy()
                 self.all_hints.destroy()
-                text="Joueur noir gagne"
+                text="Le joueur noir a gagne!  \n Voulez vous rejouer?"
             elif self.othellier.winner() == 1:
                 self.bg.destroy()
                 self.bg2.destroy()
@@ -266,7 +266,7 @@ class Game(tk.Frame):
                 self.plateau.destroy()
                 self.hint.destroy()
                 self.all_hints.destroy()
-                text="Joueur blanc gagne"
+                text="Le joueur blanc a gagne! \n Voulez vous rejouez?"
             elif self.othellier.winner() == None:
                 self.bg.destroy()
                 self.bg2.destroy()
@@ -278,7 +278,7 @@ class Game(tk.Frame):
                 self.plateau.destroy()
                 self.hint.destroy()
                 self.hint.destroy()
-                text="Match nul"
+                text="C'est un match nul!  \n Voulez vous rejouez?"
             GameOver(self.parent,text)
 
     def play_move(self,couple):
@@ -319,16 +319,15 @@ class Game(tk.Frame):
 
     # def show_bg(self):
 
-
 class GameOver(tk.Frame):
     def __init__(self, parent,text):
         super().__init__(parent)
         self.parent=parent
 
-        self.label = tk.Label(parent, text="Game Over" ,font=("ArcadeClassic", 70),bg="#e6dbbe", justify=tk.CENTER)
+        self.label = tk.Label(parent, text="Game Over" ,font=("Tiny5", 120),bg="#e6dbbe", justify=tk.CENTER)
         self.label.grid(row=0,column=0,columnspan=4)
 
-        self.label2 = tk.Label(parent, text=text,font=("Helvetica", 30),bg="#e6dbbe", justify=tk.CENTER)
+        self.label2 = tk.Label(parent, text=text,font=("DM Serif Display", 40),bg="#e6dbbe", justify=tk.CENTER)
         self.label2.grid(row=1,column=0,columnspan=4)
 
 
