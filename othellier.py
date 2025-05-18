@@ -144,13 +144,6 @@ class Othellier:
     ### Méthodes privées ###
 
     def __initializeGame(self):
-        # for i in range(2):
-        #     for j in range(8):
-        #         self.othellier_matrix[i,j] = Paw(1,(i,j))
-        # self.othellier_matrix[0,7]=0
-        # for i in range(2,8):
-        #     for j in range(8):
-        #         self.othellier_matrix[i,j] = Paw(0,(i,j))
         self.othellier_matrix[3, 3] = Paw(0, (3, 3))
         self.othellier_matrix[3, 4] = Paw(1, (3, 4))
         self.othellier_matrix[4,3] = Paw(1, (4, 3))

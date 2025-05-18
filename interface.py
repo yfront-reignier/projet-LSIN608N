@@ -295,14 +295,14 @@ class Game(tk.Frame):
     
     def ai_vs_player(self,couple):
         self.play_move(couple) 
+        self.maj_score()
         self.update()
         time.sleep(0.1) 
         if self.othellier.player==1:
             ai= Computer(self.othellier)
-            move=(ai.minimax(self.othellier,7))[1]
+            move=(ai.minimax(self.othellier,9))[1]
             if move:
                 self.play_move((move[1]*100,move[0]*100))
-            
         
     def click(self,event):
         self.delete_hints() 
