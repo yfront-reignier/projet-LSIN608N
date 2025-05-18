@@ -26,14 +26,6 @@ class MainMenu(tk.Frame):
         self.label = tk.Label(parent,text = "Othello \n⚫VS⚪ ",bg="#e6dbbe", justify=tk.CENTER)
         self.label.grid(row =0, column=0,rowspan=1, columnspan=4)
         self.label.config(font=("ArcadeClassic",100 ))
-
-        # self.fond = Image.open("othello.png")
-        # self.fond = self.fond.resize((500,500))
-        # self.fond_tk = ImageTk.PhotoImage(self.fond)
-        
-        # self.cnv = tk.Canvas(parent, width=500, height=500)
-        # self.cnv.grid(row=0, column=0, rowspan=4, columnspan=3)
-        # self.cnv.create_image(0, 0, image=self.fond_tk, anchor="nw")
         
         self.jcj_button = tk.Button(parent, text="Joueur vs Joueur", padx=20, pady=10, bd=5, font=("Arial", 14,"bold"),
                                     bg="#228B22",fg="white",
@@ -317,7 +309,6 @@ class Game(tk.Frame):
         if self.othellier.game_over():
             self.win_lose(self.parent)
 
-    # def show_bg(self):
 
 class GameOver(tk.Frame):
     def __init__(self, parent,text):
